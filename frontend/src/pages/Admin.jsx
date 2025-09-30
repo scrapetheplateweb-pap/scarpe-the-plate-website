@@ -24,14 +24,16 @@ export default function Admin() {
   return (
     <div className="container">
       <h1>Admin Patch Console</h1>
-      <button onClick={applyPatch} disabled={loading}>
-        {loading ? 'Applying...' : 'Apply Patch'}
-      </button>
-      <div style={{ marginTop: '1rem' }}>
-        <h3>Patch History:</h3>
-        {patches.map((patch, i) => (
-          <div key={i}>{patch}</div>
-        ))}
+      <div className="admin-container">
+        <button onClick={applyPatch} disabled={loading}>
+          {loading ? 'Applying...' : 'Apply Patch'}
+        </button>
+        <div style={{ marginTop: '1.5rem' }}>
+          <h3>Patch History:</h3>
+          {patches.map((patch, i) => (
+            <div key={i} className="patch-item">{patch}</div>
+          ))}
+        </div>
       </div>
     </div>
   );

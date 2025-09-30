@@ -29,24 +29,24 @@ export default function ChatBot() {
   };
 
   return (
-    <div style={{ marginTop: '2rem', border: '1px solid #ccc', padding: '1rem', borderRadius: '8px' }}>
+    <div className="chat-container">
       <h3>Chat with us</h3>
-      <div style={{ height: '200px', overflowY: 'auto', marginBottom: '1rem', background: '#f5f5f5', padding: '0.5rem' }}>
+      <div className="chat-messages">
         {messages.map((msg, i) => (
-          <div key={i} style={{ marginBottom: '0.5rem' }}>
-            <strong>{msg.role === 'user' ? 'You' : 'Bot'}:</strong> {msg.text}
+          <div key={i} className={`chat-message ${msg.role}`}>
+            <strong>{msg.role === 'user' ? 'You' : 'Bot'}</strong>
+            {msg.text}
           </div>
         ))}
-        {loading && <div>Bot is typing...</div>}
+        {loading && <div className="typing-indicator">Bot is typing...</div>}
       </div>
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
+      <div className="chat-input-container">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
           placeholder="Type a message..."
-          style={{ flex: 1, padding: '0.5rem' }}
         />
         <button onClick={sendMessage} disabled={loading}>Send</button>
       </div>
