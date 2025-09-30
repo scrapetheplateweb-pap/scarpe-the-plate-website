@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+__pycache__/
+*.pyc
+.venv
+venv/
+.replit
+.cache/
+.config/
+.upm/
+.local/
