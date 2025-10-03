@@ -23,15 +23,24 @@ export default function Admin() {
     title: '',
     content: '',
     imageUrl: '',
+    videoUrl: '',
     comments: []
   });
   const [newComment, setNewComment] = useState('');
   const [selectedPostIndex, setSelectedPostIndex] = useState(null);
 
+  // Booking management states
+  const [bookings, setBookings] = useState([]);
+
   React.useEffect(() => {
     const savedPosts = localStorage.getItem('sitePosts');
     if (savedPosts) {
       setPosts(JSON.parse(savedPosts));
+    }
+
+    const savedBookings = localStorage.getItem('siteBookings');
+    if (savedBookings) {
+      setBookings(JSON.parse(savedBookings));
     }
   }, []);
 
@@ -107,6 +116,7 @@ export default function Admin() {
       title: '',
       content: '',
       imageUrl: '',
+      videoUrl: '',
       comments: []
     });
 
@@ -135,6 +145,24 @@ export default function Admin() {
     setNewComment('');
     setSelectedPostIndex(null);
     setSuccessMessage('Comment added!');
+    setTimeout(() => setSuccessMessage(''), 3000);
+  };
+
+  const deleteBooking = (bookingId) => {
+    const updatedBookings = bookings.filter(b => b.id !== bookingId);
+    setBookings(updatedBookings);
+    localStorage.setItem('siteBookings', JSON.stringify(updatedBookings));
+    setSuccessMessage('Booking deleted!');
+    setTimeout(() => setSuccessMessage(''), 3000);
+  };
+
+  const markBookingComplete = (bookingId) => {
+    const updatedBookings = bookings.map(b => 
+      b.id === bookingId ? { ...b, status: 'completed' } : b
+    );
+    setBookings(updatedBookings);
+    localStorage.setItem('siteBookings', JSON.stringify(updatedBookings));
+    setSuccessMessage('Booking marked as completed!');
     setTimeout(() => setSuccessMessage(''), 3000);
   };
 
@@ -185,6 +213,12 @@ export default function Admin() {
           style={{ opacity: activeTab === 'posts' ? 1 : 0.6 }}
         >
           Post Manager
+        </button>
+        <button 
+          onClick={() => setActiveTab('bookings')}
+          style={{ opacity: activeTab === 'bookings' ? 1 : 0.6 }}
+        >
+          Bookings
         </button>
         <button 
           onClick={() => setActiveTab('settings')}
@@ -408,6 +442,17 @@ export default function Admin() {
               style={{ width: '100%', marginBottom: '1rem' }}
             />
 
+            <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+              Video URL:
+            </label>
+            <input
+              type="text"
+              value={newPost.videoUrl}
+              onChange={(e) => setNewPost({...newPost, videoUrl: e.target.value})}
+              placeholder="Enter video URL (YouTube, Vimeo, etc. - optional)..."
+              style={{ width: '100%', marginBottom: '1rem' }}
+            />
+
             <button onClick={createPost}>Create Post</button>
           </div>
 
@@ -454,20 +499,15 @@ export default function Admin() {
                   <p style={{ color: '#aaa9ad', marginBottom: '1rem' }}>{post.content}</p>
 
                   {post.imageUrl && (
-                    <img 
-                      src={post.imageUrl} 
-                      alt={post.title}
-                      style={{
-                        width: '100%',
-                        maxHeight: '300px',
-                        objectFit: 'cover',
-                        borderRadius: '4px',
-                        marginBottom: '1rem'
-                      }}
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
+                    <div style={{ marginBottom: '1rem' }}>
+                      <strong style={{ color: '#f50505' }}>Image:</strong> {post.imageUrl}
+                    </div>
+                  )}
+
+                  {post.videoUrl && (
+                    <div style={{ marginBottom: '1rem' }}>
+                      <strong style={{ color: '#f50505' }}>Video:</strong> {post.videoUrl}
+                    </div>
                   )}
 
                   {/* Comments Section */}
@@ -542,6 +582,103 @@ export default function Admin() {
         </div>
       )}
 
+      {/* Bookings Tab */}
+      {activeTab === 'bookings' && (
+        <div className="admin-container">
+          <h3>Service Bookings</h3>
+          
+          {bookings.length === 0 ? (
+            <p style={{ color: '#aaa9ad', marginTop: '1.5rem' }}>No bookings yet.</p>
+          ) : (
+            <div style={{ marginTop: '1.5rem' }}>
+              {bookings.map((booking) => (
+                <div key={booking.id} style={{
+                  border: '2px solid #9300c5',
+                  borderRadius: '8px',
+                  padding: '1rem',
+                  marginBottom: '1rem',
+                  background: booking.status === 'completed' ? '#1a4d1a' : '#2a262b'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
+                    <div>
+                      <span style={{
+                        background: '#f50505',
+                        color: 'white',
+                        padding: '0.3rem 0.6rem',
+                        borderRadius: '4px',
+                        fontSize: '0.8rem',
+                        fontWeight: 'bold',
+                        marginRight: '0.5rem'
+                      }}>
+                        {booking.page.toUpperCase()}
+                      </span>
+                      {booking.status === 'completed' && (
+                        <span style={{
+                          background: '#00ff00',
+                          color: '#000',
+                          padding: '0.3rem 0.6rem',
+                          borderRadius: '4px',
+                          fontSize: '0.8rem',
+                          fontWeight: 'bold'
+                        }}>
+                          COMPLETED
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      {booking.status !== 'completed' && (
+                        <button 
+                          onClick={() => markBookingComplete(booking.id)}
+                          style={{ 
+                            background: '#00aa00',
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.9rem'
+                          }}
+                        >
+                          Mark Complete
+                        </button>
+                      )}
+                      <button 
+                        onClick={() => deleteBooking(booking.id)}
+                        style={{ 
+                          background: '#f50505',
+                          padding: '0.5rem 1rem',
+                          fontSize: '0.9rem'
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="patch-item">
+                    <strong style={{ color: '#f50505' }}>Name:</strong> {booking.name}
+                  </div>
+                  <div className="patch-item">
+                    <strong style={{ color: '#f50505' }}>Email:</strong> {booking.email}
+                  </div>
+                  <div className="patch-item">
+                    <strong style={{ color: '#f50505' }}>Phone:</strong> {booking.phone}
+                  </div>
+                  <div className="patch-item">
+                    <strong style={{ color: '#f50505' }}>Date:</strong> {booking.date}
+                  </div>
+                  <div className="patch-item">
+                    <strong style={{ color: '#f50505' }}>Time:</strong> {booking.time}
+                  </div>
+                  <div className="patch-item">
+                    <strong style={{ color: '#f50505' }}>Message:</strong> {booking.message}
+                  </div>
+                  <div className="patch-item">
+                    <strong style={{ color: '#f50505' }}>Submitted:</strong> {new Date(booking.timestamp).toLocaleString()}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Settings Tab */}
       {activeTab === 'settings' && (
         <div className="admin-container">
@@ -558,6 +695,9 @@ export default function Admin() {
             </div>
             <div className="patch-item">
               <strong>Total Posts:</strong> {posts.length}
+            </div>
+            <div className="patch-item">
+              <strong>Total Bookings:</strong> {bookings.length}
             </div>
             <div className="patch-item">
               <strong>Status:</strong> Active
