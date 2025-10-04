@@ -77,7 +77,7 @@ export default function Home() {
           This is <span style={{ color: '#f50505' }}>Scape the Plate</span>.
         </p>
         <p style={{ fontSize: '1.2rem', marginTop: '1.5rem' }}>
-          💡 Right now, we're bringing you top-tier <span style={{ color: '#9300c5' }}>Comedy</span>, custom <span style={{ color: '#9300c5' }}>Car Wrapping</span>, and professional <span style={{ color: '#9300c5' }}>Modeling</span>—all available for booking today.
+          💡 Right now, we're bringing you top-tier <Link to="/comedy" style={{ color: '#9300c5', textDecoration: 'underline' }}>Comedy</Link>, custom <Link to="/carwraps" style={{ color: '#9300c5', textDecoration: 'underline' }}>Car Wrapping</Link>, and professional <Link to="/modeling" style={{ color: '#9300c5', textDecoration: 'underline' }}>Modeling</Link>—all available for booking today.
         </p>
         
         {/* Service Quick Links */}
