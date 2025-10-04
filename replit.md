@@ -6,6 +6,16 @@ Scrape the Plate is a full-stack web application designed for managing entertain
 
 ## Recent Changes
 
+**October 4, 2025 - Patch Management System Implementation**:
+- Implemented secure patch management system allowing code modifications through admin panel
+- JSON-based patch format supporting create, update, and delete file operations
+- Comprehensive security measures: path validation, directory traversal prevention, error sanitization
+- Automatic backup system before updates/deletions with rollback capability
+- Patch history tracking with detailed operation logs and status reporting
+- Protected directories (node_modules, .git, backend/data) cannot be modified
+- All error messages sanitized to prevent filesystem path disclosure
+- Input validation: 50 ops/patch max, 1MB content limit, 100 patch history limit
+
 **October 4, 2025 - Complete Site Overhaul Following User Feedback**:
 - Redesigned Home page with bold hero section showing all three services (Comedy, Car Wrapping, Modeling)
 - Added "What We Do" services section with three-column grid layout and CTAs
@@ -119,6 +129,20 @@ Preferred communication style: Simple, everyday language.
 - View site statistics (total posts, total bookings)
 - Monitor site status
 - View configuration details
+
+**Patch Management System**:
+- Apply JSON-formatted patches to create, update, or delete files in the project
+- Automatic backup creation before any destructive operations (update/delete)
+- Comprehensive patch history with operation details and timestamps
+- One-click rollback to restore files from backups
+- Security features:
+  - Path validation preventing directory traversal attacks
+  - Protected directories (node_modules, .git, backend/data) cannot be modified
+  - Error message sanitization to prevent filesystem path disclosure
+  - Input limits: 50 operations per patch, 1MB content maximum
+- Patch operations tracked with success/failure status for each file
+- Detailed operation logs showing which files were modified, created, or deleted
+- Example patch format provided in UI with instructions
 
 ### Booking System
 
