@@ -50,6 +50,10 @@ const bookingsRouter = require("./routes/bookings");
 const adminRouter = require("./routes/admin");
 const chatProxyRouter = require("./routes/chatProxy");
 const activityRouter = require("./routes/activity");
+const productsRouter = require("./routes/products");
+const cartRouter = require("./routes/cart");
+const ordersRouter = require("./routes/orders");
+const stripeRouter = require("./routes/stripe");
 
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postsRouter);
@@ -59,6 +63,10 @@ app.use("/api/bookings", bookingsRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/chat", chatProxyRouter);
 app.use("/api/activity", activityRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/cart", cartRouter);
+app.use("/api/orders", ordersRouter);
+app.use("/api/stripe", stripeRouter);
 
 app.get("/api", (req, res) => {
   res.json({ message: "Scrape the Plate v4 Backend API" });

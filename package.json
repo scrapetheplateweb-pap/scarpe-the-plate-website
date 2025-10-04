@@ -10,9 +10,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@stripe/react-stripe-js": "^5.0.0",
+    "@stripe/stripe-js": "^8.0.0",
     "bcrypt": "^6.0.0",
     "connect-pg-simple": "^10.0.0",
     "express-session": "^1.18.2",
-    "serve": "^14.2.5"
+    "serve": "^14.2.5",
+    "stripe": "^19.1.0"
   }
 }

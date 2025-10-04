@@ -10,6 +10,9 @@ import Modeling from './pages/Modeling';
 import Media from './pages/Media';
 import Contact from './pages/Contact';
 import Store from './pages/Store';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import OrderSuccess from './pages/OrderSuccess';
 import Admin from './pages/Admin';
 import ChatBot from './components/ChatBot';
 
@@ -26,6 +29,9 @@ export default function App() {
         <Route path="/media" element={<Media />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/store" element={<Store />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
       <Footer />
