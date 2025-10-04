@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AdminContentEditor from './AdminContentEditor';
 import ProductManager from './ProductManager';
 import ApplicationManager from './ApplicationManager';
+import MobileSettings from './MobileSettings';
 
 export default function Admin() {
   const [patches, setPatches] = useState([]);
@@ -477,6 +478,12 @@ export default function Admin() {
           style={{ opacity: activeTab === 'applications' ? 1 : 0.6 }}
         >
           Job Applications
+        </button>
+        <button 
+          onClick={() => setActiveTab('mobile')}
+          style={{ opacity: activeTab === 'mobile' ? 1 : 0.6 }}
+        >
+          Mobile Settings
         </button>
         <button 
           onClick={() => setActiveTab('activity')}
@@ -1380,6 +1387,13 @@ export default function Admin() {
               setTimeout(() => setSuccessMessage(''), 3000);
             }}
           />
+        </div>
+      )}
+
+      {/* Mobile Settings Tab */}
+      {activeTab === 'mobile' && (
+        <div className="admin-container">
+          <MobileSettings />
         </div>
       )}
 
