@@ -197,8 +197,18 @@
   font-weight: 700 !important;
   text-transform: uppercase;
   letter-spacing: 2px;
-  margin: 2rem 0;
+  margin: 2rem 0 1rem 0;
   text-shadow: 2px 2px 6px rgba(147, 0, 197, 0.4);
+}
+
+.about-highlight-large {
+  color: #9300c5 !important;
+  font-size: 3rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 1rem 0 2rem 0;
+  text-shadow: 3px 3px 8px rgba(147, 0, 197, 0.5);
 }
 
 .philosophy-quote {

@@ -69,7 +69,8 @@ export default function Home() {
           </p>
           <p className="about-highlight">
             This isn't just a brand. This isn't just business.
-            <br /><br />
+          </p>
+          <p className="about-highlight-large">
             This is Scape the Plate.
           </p>
           <p className="philosophy-quote">
