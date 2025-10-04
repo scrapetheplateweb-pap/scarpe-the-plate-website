@@ -1,0 +1,49 @@
+/* Mobile-specific styles */
+
+@media (max-width: 768px) {
+  /* Dynamic font sizes - will be updated by mobile settings */
+  .mobile-heading {
+    font-size: var(--mobile-heading-size, 1.8rem);
+  }
+
+  .mobile-subheading {
+    font-size: var(--mobile-subheading-size, 1.2rem);
+  }
+
+  .mobile-body {
+    font-size: var(--mobile-body-size, 1rem);
+  }
+
+  /* Layout modes */
+  .mobile-single-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .mobile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  /* Hidden sections */
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  /* Navigation adjustments */
+  nav .nav-links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Service cards in grid mode */
+  .services-grid.mobile-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .services-grid.mobile-single-column {
+    grid-template-columns: 1fr;
+  }
+}

@@ -4,7 +4,9 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import DraggableSection from '../components/DraggableSection';
 import PostCard from '../components/PostCard';
+import { useMobileSettings } from '../hooks/useMobileSettings';
 import './Home.css';
+import '../styles/mobile.css';
 
 export default function HomeWithDragDrop() {
   const [posts, setPosts] = useState([]);
@@ -17,6 +19,8 @@ export default function HomeWithDragDrop() {
     { id: 'about', name: 'About Section' },
     { id: 'cta', name: 'Call to Action Section' }
   ]);
+  
+  const { settings: mobileSettings, isMobile } = useMobileSettings();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -29,7 +33,13 @@ export default function HomeWithDragDrop() {
     checkAdminStatus();
     loadPosts();
     loadSectionOrder();
-  }, []);
+    
+    if (isMobile && mobileSettings.font_sizes) {
+      document.documentElement.style.setProperty('--mobile-heading-size', mobileSettings.font_sizes.heading);
+      document.documentElement.style.setProperty('--mobile-subheading-size', mobileSettings.font_sizes.subheading);
+      document.documentElement.style.setProperty('--mobile-body-size', mobileSettings.font_sizes.body);
+    }
+  }, [isMobile, mobileSettings]);
 
   const checkAdminStatus = async () => {
     try {
@@ -118,16 +128,37 @@ export default function HomeWithDragDrop() {
     }
   };
 
+  const isSectionVisible = (sectionId) => {
+    if (!isMobile) return true;
+    return mobileSettings.section_visibility?.[sectionId] !== false;
+  };
+
+  const getMobileContent = (page, field, defaultContent) => {
+    if (!isMobile) return defaultContent;
+    const key = `${page}_${field}`;
+    return mobileSettings.mobile_content?.[key] || defaultContent;
+  };
+
   const renderSection = (sectionId) => {
+    if (!isSectionVisible(sectionId)) {
+      return null;
+    }
+
+    const layoutClass = isMobile && mobileSettings.layout_mode === 'grid' ? 'mobile-grid' : 'mobile-single-column';
+
     switch (sectionId) {
       case 'hero':
         return (
           <section className="hero-section">
             <div className="hero-content">
-              <h1>Scape the Plate Entertainment</h1>
-              <p className="hero-subtitle">Comedy. Car Wrapping. Modeling</p>
-              <p className="hero-tagline">Available for Booking</p>
-              <p className="hero-tagline">Est. 2000 – Present</p>
+              <h1 className={isMobile ? 'mobile-heading' : ''}>
+                {getMobileContent('home', 'title', 'Scape the Plate Entertainment')}
+              </h1>
+              <p className={`hero-subtitle ${isMobile ? 'mobile-subheading' : ''}`}>
+                {getMobileContent('home', 'tagline', 'Comedy. Car Wrapping. Modeling')}
+              </p>
+              <p className={`hero-tagline ${isMobile ? 'mobile-body' : ''}`}>Available for Booking</p>
+              <p className={`hero-tagline ${isMobile ? 'mobile-body' : ''}`}>Est. 2000 – Present</p>
               <div className="hero-cta">
                 <Link to="/comedy"><button>Book Comedy</button></Link>
                 <Link to="/car-wraps"><button>Book Car Wrapping</button></Link>
@@ -140,8 +171,8 @@ export default function HomeWithDragDrop() {
       case 'services':
         return (
           <section className="services-section">
-            <h2>What We Do</h2>
-            <div className="services-grid">
+            <h2 className={isMobile ? 'mobile-heading' : ''}>What We Do</h2>
+            <div className={`services-grid ${isMobile ? layoutClass : ''}`}>
               <div className="service-card">
                 <div className="service-icon">🎤</div>
                 <h3>Comedy</h3>
@@ -218,8 +249,8 @@ export default function HomeWithDragDrop() {
         return (
           <section className="about-section">
             <div className="about-content">
-              <h2>Our Philosophy</h2>
-              <p>
+              <h2 className={isMobile ? 'mobile-heading' : ''}>Our Philosophy</h2>
+              <p className={isMobile ? 'mobile-body' : ''}>
                 From Atlanta to the Carolinas, to Virginia, and now nationwide—we've been setting the standard in entertainment since day one.
               </p>
               <p className="about-highlight">
