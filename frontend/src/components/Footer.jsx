@@ -46,6 +46,9 @@ export default function Footer() {
       <div className="footer-bottom">
         <p>&copy; {new Date().getFullYear()} Scape the Plate Entertainment. All rights reserved.</p>
         <p>Serving customers nationwide since 2000</p>
+        <p style={{ marginTop: '1rem' }}>
+          <Link to="/admin" style={{ color: '#9300c5', textDecoration: 'none', fontWeight: 'bold', transition: 'color 0.3s' }}>Admin Access</Link>
+        </p>
       </div>
     </footer>
   );

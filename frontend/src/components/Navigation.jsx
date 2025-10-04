@@ -17,7 +17,6 @@ export default function Navigation() {
       <Link to="/modeling" className={isActive('/modeling')}>Modeling</Link>
       <Link to="/media" className={isActive('/media')}>Media</Link>
       <Link to="/contact" className={isActive('/contact')}>Contact</Link>
-      <Link to="/admin" className={isActive('/admin')}>Admin</Link>
     </nav>
   );
 }
