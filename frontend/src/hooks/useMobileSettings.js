@@ -11,9 +11,9 @@ export function useMobileSettings() {
     },
     navigation_items: ['home', 'about', 'comedy', 'car-wraps', 'modeling', 'media', 'store'],
     font_sizes: {
-      heading: '1.8rem',
-      subheading: '1.2rem',
-      body: '1rem'
+      heading: '1.5rem',
+      subheading: '1.1rem',
+      body: '0.95rem'
     },
     layout_mode: 'single-column',
     mobile_content: {}
