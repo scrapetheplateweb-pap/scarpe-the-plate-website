@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
-import Home from './pages/Home';
+import HomeWithDragDrop from './pages/HomeWithDragDrop';
 import About from './pages/About';
 import Comedy from './pages/Comedy';
 import CarWraps from './pages/CarWraps';
@@ -22,7 +22,7 @@ export default function App() {
     <div>
       <Navigation />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<HomeWithDragDrop />} />
         <Route path="/about" element={<About />} />
         <Route path="/comedy" element={<Comedy />} />
         <Route path="/car-wraps" element={<CarWraps />} />
