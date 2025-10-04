@@ -71,7 +71,7 @@ export default function Home() {
             This isn't just a brand. This isn't just business.
           </p>
           <p className="about-highlight-large">
-            This is Scape the Plate.
+            This is Scape the Plate entertainment!
           </p>
           <p className="philosophy-quote">
             "For us, scraping the plate ain't about being full. It's about delivering value, creating unforgettable experiences, and making sure nobody leaves empty-handed."
