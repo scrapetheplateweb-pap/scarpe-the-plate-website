@@ -37,6 +37,12 @@ export default function Admin() {
   // Booking management states
   const [bookings, setBookings] = useState([]);
 
+  // User activity states
+  const [activityStats, setActivityStats] = useState(null);
+  const [activityLogs, setActivityLogs] = useState([]);
+  const [activityFilter, setActivityFilter] = useState('all');
+  const [activityLimit, setActivityLimit] = useState(50);
+
   // Availability management states
   const [availability, setAvailability] = useState({});
   const [selectedService, setSelectedService] = useState('comedy');
@@ -393,6 +399,12 @@ export default function Admin() {
           style={{ opacity: activeTab === 'bookings' ? 1 : 0.6 }}
         >
           Bookings
+        </button>
+        <button 
+          onClick={() => setActiveTab('activity')}
+          style={{ opacity: activeTab === 'activity' ? 1 : 0.6 }}
+        >
+          User Activity
         </button>
         <button 
           onClick={() => setActiveTab('settings')}
@@ -1136,6 +1148,146 @@ export default function Admin() {
                     </div>
                   ))}
               </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* User Activity Tab */}
+      {activeTab === 'activity' && (
+        <div className="admin-container">
+          <h3>User Activity & Traffic Analytics</h3>
+          
+          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+            <button 
+              onClick={async () => {
+                try {
+                  const statsRes = await fetch('/api/activity/stats', { credentials: 'include' });
+                  const activityRes = await fetch(`/api/activity?limit=${activityLimit}`, { credentials: 'include' });
+                  if (statsRes.ok && activityRes.ok) {
+                    setActivityStats(await statsRes.json());
+                    setActivityLogs(await activityRes.json());
+                  } else {
+                    console.error('Failed to load activity data');
+                  }
+                } catch (error) {
+                  console.error('Error loading activity:', error);
+                }
+              }}
+            >
+              Refresh Data
+            </button>
+            <select 
+              value={activityLimit} 
+              onChange={(e) => setActivityLimit(e.target.value)}
+              style={{ padding: '0.5rem' }}
+            >
+              <option value="25">Show 25</option>
+              <option value="50">Show 50</option>
+              <option value="100">Show 100</option>
+              <option value="200">Show 200</option>
+            </select>
+          </div>
+
+          {activityStats && (
+            <div>
+              <h4 style={{ color: '#9300c5', marginBottom: '1rem' }}>Last 30 Days Statistics</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+                <div className="patch-item" style={{ background: '#1a1a1a', padding: '1rem', borderRadius: '4px' }}>
+                  <div style={{ color: '#aaa9ad', fontSize: '0.9rem' }}>Total Actions</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#9300c5' }}>{activityStats.stats?.total_actions || 0}</div>
+                </div>
+                <div className="patch-item" style={{ background: '#1a1a1a', padding: '1rem', borderRadius: '4px' }}>
+                  <div style={{ color: '#aaa9ad', fontSize: '0.9rem' }}>Unique Users</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#f50505' }}>{activityStats.stats?.unique_users || 0}</div>
+                </div>
+                <div className="patch-item" style={{ background: '#1a1a1a', padding: '1rem', borderRadius: '4px' }}>
+                  <div style={{ color: '#aaa9ad', fontSize: '0.9rem' }}>Page Views</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#9300c5' }}>{activityStats.stats?.total_page_views || 0}</div>
+                </div>
+                <div className="patch-item" style={{ background: '#1a1a1a', padding: '1rem', borderRadius: '4px' }}>
+                  <div style={{ color: '#aaa9ad', fontSize: '0.9rem' }}>Registrations</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#f50505' }}>{activityStats.stats?.total_registrations || 0}</div>
+                </div>
+                <div className="patch-item" style={{ background: '#1a1a1a', padding: '1rem', borderRadius: '4px' }}>
+                  <div style={{ color: '#aaa9ad', fontSize: '0.9rem' }}>Logins</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#9300c5' }}>{activityStats.stats?.total_logins || 0}</div>
+                </div>
+                <div className="patch-item" style={{ background: '#1a1a1a', padding: '1rem', borderRadius: '4px' }}>
+                  <div style={{ color: '#aaa9ad', fontSize: '0.9rem' }}>Posts Created</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#f50505' }}>{activityStats.stats?.total_posts_created || 0}</div>
+                </div>
+                <div className="patch-item" style={{ background: '#1a1a1a', padding: '1rem', borderRadius: '4px' }}>
+                  <div style={{ color: '#aaa9ad', fontSize: '0.9rem' }}>Comments</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#9300c5' }}>{activityStats.stats?.total_comments || 0}</div>
+                </div>
+                <div className="patch-item" style={{ background: '#1a1a1a', padding: '1rem', borderRadius: '4px' }}>
+                  <div style={{ color: '#aaa9ad', fontSize: '0.9rem' }}>Likes</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#f50505' }}>{activityStats.stats?.total_likes || 0}</div>
+                </div>
+                <div className="patch-item" style={{ background: '#1a1a1a', padding: '1rem', borderRadius: '4px' }}>
+                  <div style={{ color: '#aaa9ad', fontSize: '0.9rem' }}>Bookings</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#9300c5' }}>{activityStats.stats?.total_bookings || 0}</div>
+                </div>
+              </div>
+
+              {activityStats.topPages && activityStats.topPages.length > 0 && (
+                <div style={{ marginBottom: '2rem' }}>
+                  <h4 style={{ color: '#f50505', marginBottom: '1rem' }}>Top Pages</h4>
+                  <div style={{ background: '#1a1a1a', padding: '1rem', borderRadius: '4px' }}>
+                    {activityStats.topPages.map((page, idx) => (
+                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: idx < activityStats.topPages.length - 1 ? '1px solid #2a262b' : 'none' }}>
+                        <span style={{ textTransform: 'capitalize' }}>{page.page || 'Unknown'}</span>
+                        <span style={{ color: '#9300c5', fontWeight: 'bold' }}>{page.visits} visits</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          <h4 style={{ color: '#9300c5', marginBottom: '1rem' }}>Recent Activity Log</h4>
+          <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+            {activityLogs.length === 0 ? (
+              <div className="patch-item">
+                <p style={{ color: '#aaa9ad' }}>No activity recorded yet. Click "Refresh Data" to load activity logs.</p>
+              </div>
+            ) : (
+              activityLogs.map((log, idx) => (
+                <div key={idx} className="patch-item" style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                    <div>
+                      <span style={{ 
+                        background: log.action_type.includes('delete') ? '#f50505' : 
+                                   log.action_type.includes('create') || log.action_type === 'register' ? '#00aa00' : 
+                                   log.action_type === 'login' ? '#9300c5' : '#666',
+                        padding: '0.2rem 0.5rem',
+                        borderRadius: '3px',
+                        fontSize: '0.8rem',
+                        fontWeight: 'bold',
+                        marginRight: '0.5rem'
+                      }}>
+                        {log.action_type.toUpperCase().replace('_', ' ')}
+                      </span>
+                      <strong>{log.username || 'anonymous'}</strong>
+                      {log.display_name && <span style={{ color: '#aaa9ad' }}> ({log.display_name})</span>}
+                    </div>
+                    <span style={{ color: '#aaa9ad', fontSize: '0.8rem' }}>
+                      {new Date(log.created_at).toLocaleString()}
+                    </span>
+                  </div>
+                  <div style={{ color: '#aaa9ad', fontSize: '0.85rem' }}>
+                    {log.action_details || 'No details'}
+                    {log.page && <span style={{ marginLeft: '0.5rem', color: '#9300c5' }}>• Page: {log.page}</span>}
+                  </div>
+                  {log.ip_address && (
+                    <div style={{ color: '#666', fontSize: '0.75rem', marginTop: '0.2rem' }}>
+                      IP: {log.ip_address}
+                    </div>
+                  )}
+                </div>
+              ))
             )}
           </div>
         </div>

@@ -4,10 +4,14 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
+    if (!req.session.userId) {
+      return res.status(401).json({ error: 'Admin authentication required' });
+    }
+
     const { limit = 100, user_id, action_type } = req.query;
     
     let query = `
-      SELECT a.*, u.display_name, u.email
+      SELECT a.id, a.user_id, a.username, a.action_type, a.action_details, a.page, a.created_at, u.display_name
       FROM user_activity a
       LEFT JOIN users u ON a.user_id = u.id
       WHERE 1=1
@@ -40,6 +44,10 @@ router.get('/', async (req, res) => {
 
 router.get('/stats', async (req, res) => {
   try {
+    if (!req.session.userId) {
+      return res.status(401).json({ error: 'Admin authentication required' });
+    }
+
     const stats = await pool.query(`
       SELECT 
         COUNT(*) as total_actions,
