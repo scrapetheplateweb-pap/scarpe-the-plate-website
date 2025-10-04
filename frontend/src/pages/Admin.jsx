@@ -99,6 +99,19 @@ export default function Admin() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin-auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      setIsAuthenticated(false);
+      setAccessCode('');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   const loadPatches = async () => {
     try {
       const response = await fetch('/api/admin/patch/list');
@@ -396,7 +409,24 @@ export default function Admin() {
 
   return (
     <div className="container">
-      <h1>Admin Control Panel</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <h1>Admin Control Panel</h1>
+        <button 
+          onClick={handleLogout}
+          style={{
+            background: '#f50505',
+            color: 'white',
+            border: 'none',
+            padding: '10px 20px',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '1rem'
+          }}
+        >
+          🚪 Logout
+        </button>
+      </div>
       
       {/* Tab Navigation */}
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
