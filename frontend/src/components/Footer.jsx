@@ -21,10 +21,30 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-content">
-        <div className="footer-section">
-          <h3>Scape the Plate Entertainment</h3>
-          <p>Est. 2000 – Present</p>
+        <div className="footer-section footer-brand">
+          <h3>Scape the Plate</h3>
           <p className="footer-tagline">This isn't just a brand. This isn't just business. This is Scape the Plate.</p>
+          <p style={{ marginTop: '1rem', color: '#aaa9ad' }}>Est. 2000 – Present</p>
+        </div>
+        
+        <div className="footer-section">
+          <h4>Our Services</h4>
+          <p>🎤 Live Comedy Shows</p>
+          <p>🚗 Custom Car Wrapping</p>
+          <p>📸 Professional Modeling</p>
+          <p style={{ marginTop: '1rem' }}>
+            <Link to="/careers" style={{ color: '#f50505', textDecoration: 'none', fontWeight: 'bold' }}>Join Our Team →</Link>
+          </p>
+        </div>
+
+        <div className="footer-section">
+          <h4>Get In Touch</h4>
+          <p>📧 info@scrapetheplate.com</p>
+          <p>📱 (555) 123-4567</p>
+          <p>📍 Serving Nationwide</p>
+          <p style={{ marginTop: '1rem' }}>
+            <Link to="/contact" style={{ color: '#9300c5', textDecoration: 'none', fontWeight: 'bold' }}>Contact Form →</Link>
+          </p>
         </div>
         
         <div className="footer-section">
@@ -33,35 +53,12 @@ export default function Footer() {
             <Link to="/">Home</Link>
             <Link to="/about">About</Link>
             <Link to="/comedy">Comedy</Link>
-            <Link to="/car-wraps">Car Wrapping</Link>
+            <Link to="/car-wraps">Car Wraps</Link>
             <Link to="/modeling">Modeling</Link>
             <Link to="/media">Media</Link>
             <Link to="/store">Store</Link>
-            <Link to="/contact">Contact</Link>
-            <Link to="/careers" style={{ color: '#f50505', fontWeight: 'bold' }}>Join Our Team</Link>
           </div>
-        </div>
-        
-        <div className="footer-section">
-          <h4>Services</h4>
-          <p>🎤 Live Comedy Shows</p>
-          <p>🚗 Custom Car Wrapping</p>
-          <p>📸 Professional Modeling</p>
-        </div>
-
-        <div className="footer-section">
-          <h4>Contact</h4>
-          <p>📧 Email: info@scrapetheplate.com</p>
-          <p>📱 Phone: (555) 123-4567</p>
-          <p>📍 Serving Nationwide</p>
-          <p style={{ marginTop: '0.5rem' }}>
-            <Link to="/contact" style={{ color: '#9300c5', textDecoration: 'none' }}>Contact Form →</Link>
-          </p>
-        </div>
-        
-        <div className="footer-section">
-          <h4>Connect</h4>
-          <div className="social-links">
+          <div className="social-links" style={{ marginTop: '1rem' }}>
             {socialLinks.facebook && (
               <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="social-link">Facebook</a>
             )}
@@ -88,8 +85,7 @@ export default function Footer() {
       
       <div className="footer-bottom">
         <p>&copy; {new Date().getFullYear()} Scape the Plate Entertainment. All rights reserved.</p>
-        <p>Serving customers nationwide since 2000</p>
-        <p style={{ marginTop: '1rem' }}>
+        <p style={{ marginTop: '0.5rem' }}>
           <Link to="/admin" style={{ color: '#9300c5', textDecoration: 'none', fontWeight: 'bold', transition: 'color 0.3s' }}>Admin Access</Link>
         </p>
       </div>
