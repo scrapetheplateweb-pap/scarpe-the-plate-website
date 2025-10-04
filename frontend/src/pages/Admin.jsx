@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AdminContentEditor from './AdminContentEditor';
 
 export default function Admin() {
   const [patches, setPatches] = useState([]);
@@ -350,112 +351,12 @@ export default function Admin() {
 
           {/* Content Editor Section */}
           {contentSection === 'editor' && (
-            <div>
-              <h3>Edit Site Content</h3>
-              
-              <div style={{ marginTop: '1.5rem' }}>
-                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                  Home Page Title:
-                </label>
-                <input
-                  type="text"
-                  value={homeTitle}
-                  onChange={(e) => setHomeTitle(e.target.value)}
-                  style={{ width: '100%', marginBottom: '1rem' }}
-                />
-
-                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                  Home Page Description:
-                </label>
-                <textarea
-                  value={homeDescription}
-                  onChange={(e) => setHomeDescription(e.target.value)}
-                  rows={3}
-                  style={{ 
-                    width: '100%', 
-                    marginBottom: '1rem',
-                    border: '2px solid #9300c5',
-                    borderRadius: '4px',
-                    padding: '0.8rem',
-                    background: '#2a262b',
-                    color: '#aaa9ad',
-                    fontFamily: 'Teko, sans-serif',
-                    fontSize: '1rem',
-                    resize: 'vertical'
-                  }}
-                />
-
-                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                  Comedy Page Content:
-                </label>
-                <textarea
-                  value={comedyContent}
-                  onChange={(e) => setComedyContent(e.target.value)}
-                  rows={2}
-                  style={{ 
-                    width: '100%', 
-                    marginBottom: '1rem',
-                    border: '2px solid #9300c5',
-                    borderRadius: '4px',
-                    padding: '0.8rem',
-                    background: '#2a262b',
-                    color: '#aaa9ad',
-                    fontFamily: 'Teko, sans-serif',
-                    fontSize: '1rem',
-                    resize: 'vertical'
-                  }}
-                />
-
-                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                  Car Wraps Page Content:
-                </label>
-                <textarea
-                  value={carWrapsContent}
-                  onChange={(e) => setCarWrapsContent(e.target.value)}
-                  rows={2}
-                  style={{ 
-                    width: '100%', 
-                    marginBottom: '1rem',
-                    border: '2px solid #9300c5',
-                    borderRadius: '4px',
-                    padding: '0.8rem',
-                    background: '#2a262b',
-                    color: '#aaa9ad',
-                    fontFamily: 'Teko, sans-serif',
-                    fontSize: '1rem',
-                    resize: 'vertical'
-                  }}
-                />
-
-                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                  Modeling Page Content:
-                </label>
-                <textarea
-                  value={modelingContent}
-                  onChange={(e) => setModelingContent(e.target.value)}
-                  rows={2}
-                  style={{ 
-                    width: '100%', 
-                    marginBottom: '1rem',
-                    border: '2px solid #9300c5',
-                    borderRadius: '4px',
-                    padding: '0.8rem',
-                    background: '#2a262b',
-                    color: '#aaa9ad',
-                    fontFamily: 'Teko, sans-serif',
-                    fontSize: '1rem',
-                    resize: 'vertical'
-                  }}
-                />
-
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                  <button onClick={saveContentChanges}>Save Changes</button>
-                  <button onClick={resetContent} style={{ background: 'linear-gradient(135deg, #3a363b 0%, #666 100%)' }}>
-                    Reset to Defaults
-                  </button>
-                </div>
-              </div>
-            </div>
+            <AdminContentEditor 
+              onSave={(msg) => {
+                setSuccessMessage(msg);
+                setTimeout(() => setSuccessMessage(''), 3000);
+              }}
+            />
           )}
 
           {/* Post Manager Section */}
