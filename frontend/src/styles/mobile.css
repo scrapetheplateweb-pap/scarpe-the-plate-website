@@ -1,17 +1,22 @@
-/* Mobile-specific styles */
+/* Mobile-specific styles - optimizations for mobile devices */
 
 @media (max-width: 768px) {
   /* Dynamic font sizes - will be updated by mobile settings */
   .mobile-heading {
-    font-size: var(--mobile-heading-size, 1.8rem);
+    font-size: var(--mobile-heading-size, 1.5rem);
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
   }
 
   .mobile-subheading {
-    font-size: var(--mobile-subheading-size, 1.2rem);
+    font-size: var(--mobile-subheading-size, 1.1rem);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
   }
 
   .mobile-body {
-    font-size: var(--mobile-body-size, 1rem);
+    font-size: var(--mobile-body-size, 0.95rem);
+    line-height: 1.5;
   }
 
   /* Layout modes */
@@ -24,7 +29,7 @@
   .mobile-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   /* Hidden sections */
@@ -32,18 +37,172 @@
     display: none !important;
   }
 
-  /* Navigation adjustments */
-  nav .nav-links {
-    flex-direction: column;
-    gap: 0.5rem;
+  /* Improved mobile padding and spacing */
+  section {
+    padding: 1.5rem 1rem !important;
   }
 
-  /* Service cards in grid mode */
+  .hero-section {
+    min-height: auto !important;
+    padding: 2rem 1rem !important;
+  }
+
+  .hero-content h1 {
+    font-size: var(--mobile-heading-size, 1.5rem) !important;
+  }
+
+  .hero-subtitle {
+    font-size: var(--mobile-subheading-size, 1.1rem) !important;
+  }
+
+  .hero-tagline {
+    font-size: var(--mobile-body-size, 0.95rem) !important;
+    margin: 0.25rem 0;
+  }
+
+  /* Optimize buttons for mobile */
+  .hero-cta {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .hero-cta button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  /* Service cards optimization */
+  .service-card {
+    padding: 1rem !important;
+  }
+
+  .service-card h3 {
+    font-size: 1.1rem !important;
+    margin: 0.5rem 0;
+  }
+
+  .service-card p {
+    font-size: 0.9rem !important;
+    line-height: 1.4;
+  }
+
+  .service-icon {
+    font-size: 2rem !important;
+  }
+
+  /* Service cards in different layout modes */
   .services-grid.mobile-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
   }
 
   .services-grid.mobile-single-column {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Media section optimization */
+  .media-preview {
+    gap: 0.75rem !important;
+  }
+
+  /* About section */
+  .about-content {
+    padding: 1rem !important;
+  }
+
+  .about-highlight {
+    font-size: 1rem !important;
+    padding: 1rem !important;
+    margin: 1rem 0 !important;
+  }
+
+  /* CTA section */
+  .cta-section {
+    padding: 2rem 1rem !important;
+  }
+
+  .cta-section h2 {
+    font-size: 1.5rem !important;
+    margin-bottom: 1rem;
+  }
+
+  .cta-section button {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.875rem 1.5rem;
+  }
+
+  /* Footer optimization */
+  footer {
+    padding: 1.5rem 1rem !important;
+  }
+
+  .footer-content {
+    gap: 1.5rem !important;
+  }
+
+  .footer-section {
+    padding: 0 !important;
+  }
+
+  .footer-section h3 {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.75rem;
+  }
+
+  .footer-section p,
+  .footer-section a {
+    font-size: 0.9rem !important;
+  }
+
+  /* Navigation improvements */
+  nav {
+    padding: 0.75rem 1rem !important;
+  }
+
+  nav .logo {
+    font-size: 1.25rem !important;
+  }
+
+  /* Post cards in media section */
+  .post-card {
+    padding: 1rem !important;
+  }
+
+  .post-card h3 {
+    font-size: 1.1rem !important;
+  }
+
+  .post-card p {
+    font-size: 0.9rem !important;
+  }
+
+  /* Forms optimization */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    padding: 0.75rem !important;
+  }
+
+  button {
+    font-size: 0.95rem;
+    padding: 0.75rem 1.25rem;
+    min-height: 44px; /* Touch-friendly size */
+  }
+
+  /* Image optimization */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Reduce animations on mobile for better performance */
+  * {
+    animation-duration: 0.3s !important;
+    transition-duration: 0.2s !important;
   }
 }
