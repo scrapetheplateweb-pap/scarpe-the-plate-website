@@ -72,27 +72,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="about-section">
-        <div className="about-content">
-          <h2>Our Philosophy</h2>
-          <p>
-            From Atlanta to the Carolinas, to Virginia, and now nationwide—we've been setting the standard in entertainment since day one.
-          </p>
-          <p className="about-highlight">
-            This isn't just a brand. This isn't just business.
-          </p>
-          <p className="about-highlight-large">
-            This is Scape the Plate entertainment!
-          </p>
-          <p className="philosophy-quote">
-            "For us, scraping the plate ain't about being full. It's about delivering value, creating unforgettable experiences, and making sure nobody leaves empty-handed."
-          </p>
-          <p>
-            You don't just consume entertainment with us—you become part of it. Whether you're laughing at one of our comedy shows, turning heads in a freshly wrapped ride, or stepping in front of the camera for a modeling gig, you're not a spectator. You're in the mix.
-          </p>
-        </div>
-      </section>
-
       <section className="media-preview-section">
         <h2>Our Work</h2>
         {posts.length > 0 ? (
@@ -130,6 +109,27 @@ export default function Home() {
             </Link>
           </div>
         )}
+      </section>
+
+      <section className="about-section">
+        <div className="about-content">
+          <h2>Our Philosophy</h2>
+          <p>
+            From Atlanta to the Carolinas, to Virginia, and now nationwide—we've been setting the standard in entertainment since day one.
+          </p>
+          <p className="about-highlight">
+            This isn't just a brand. This isn't just business.
+          </p>
+          <p className="about-highlight-large">
+            This is Scape the Plate entertainment!
+          </p>
+          <p className="philosophy-quote">
+            "For us, scraping the plate ain't about being full. It's about delivering value, creating unforgettable experiences, and making sure nobody leaves empty-handed."
+          </p>
+          <p>
+            You don't just consume entertainment with us—you become part of it. Whether you're laughing at one of our comedy shows, turning heads in a freshly wrapped ride, or stepping in front of the camera for a modeling gig, you're not a spectator. You're in the mix.
+          </p>
+        </div>
       </section>
 
       <section className="cta-section">
