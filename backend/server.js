@@ -57,9 +57,11 @@ const stripeRouter = require("./routes/stripe");
 const careersRouter = require("./routes/careers");
 const sectionsRouter = require("./routes/sections");
 const adminAuthRouter = require("./routes/admin-auth");
+const mobileSettingsRouter = require("./routes/mobile-settings");
 
 app.use("/api/auth", authRouter);
 app.use("/api/admin-auth", adminAuthRouter);
+app.use("/api/mobile-settings", mobileSettingsRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/user-bookings", userBookingsRouter);
