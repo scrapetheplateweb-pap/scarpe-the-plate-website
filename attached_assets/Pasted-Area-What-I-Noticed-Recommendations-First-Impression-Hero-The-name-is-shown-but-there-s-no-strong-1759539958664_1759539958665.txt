@@ -1,0 +1,105 @@
+Area	What I Noticed	Recommendations
+First Impression / Hero	The name is shown, but there’s no strong “hook” or immediate vibe that tells the visitor what you do.	Add a hero section immediately that says: “Comedy. Car Wrapping. Modeling — Available for Booking” (or similar). Use bold typography, a background image or video that shows all three services in action (comedy on stage, wrapped cars, models posing).
+Content & Messaging	Lacks clarity on which services are available now. The visitor might leave thinking it’s just a band or music.	Use a clear “What We Do” or “Our Services” section near the top. (Comedy, Car Wrapping, Modeling) with short descriptive text + “Book Now” buttons.
+Navigation / Structure	If the homepage is minimal, it may be unclear where to click next.	Add a visible nav bar (top) with tabs: Home, About, Services (or split: Comedy / Car Wrapping / Modeling), Media (gallery / videos), Contact / Booking. Use sticky navigation so users can always access it as they scroll.
+Visual Design & Hierarchy	The site is sparse. The hierarchy (what’s most important) isn’t obvious.	Use typography size, color contrast, spacing to emphasize headlines, CTAs (calls to action). Use a consistent color palette, accent colors for “Book Now” buttons. Make sure images are high-quality and expressive.
+Calls to Action	I didn’t see strong CTAs (like “Book Now,” “See Our Work,” etc.).	Each section (Comedy, Car Wrapping, Modeling) should have its own CTA button. Also a universal “Contact / Booking” button in the header. Possibly a banner or pop-up.
+Media / Visuals	The site has minimal visual variety (images, videos) from what I saw.	Use gallery / slider / video sections to show your work (cars wrapped, models in shoots, comedians on stage). People respond to seeing proof. Also, “before & after” shots would be compelling in car wrapping.
+Mobile / Responsiveness	I can’t tell how it behaves on mobile from just the link.	Make sure every element scales well on mobile: navigation collapses appropriately, images scale, text remains readable, buttons are easy to tap.
+Brand Voice	The site is not yet reflecting the hype, street, energetic tone you want.	Use the more expressive copy we worked on earlier. Sprinkle in your style, innuendos, hooks, energy. Don’t let the site feel bland. Let it speak your brand.
+SEO / Metadata / Page Titles	I didn’t see title tags, meta descriptions, etc.	Ensure every page has a descriptive title (“Scape the Plate
+🛠 How I Would Improve It (Step-by-Step Plan)
+
+Here’s a more “next steps” plan you can follow to upgrade the site:
+
+Hero Section Redesign
+
+Fill out the top of the page with a bold headline + subheadline (what you offer).
+
+Use a full-width hero image or looping background video that shows a montage: stage, car wrap, photoshoot.
+
+Overlay a “Book Now” button or buttons pointing to your services.
+
+Navigation / Menu
+
+Add a top nav bar: Home | About | Comedy | Car Wrapping | Modeling | Media | Contact
+
+Make it sticky (fixed) so users always can click.
+
+Highlight hover / active state on these menu items.
+
+Services Section
+
+Under the hero, have a section titled “We Provide:” (or “What We Do”)
+
+Three columns (or cards): Comedy | Car Wrapping | Modeling
+
+Each with an image / icon, short line describing it, and a “Book / View More” button.
+
+About / Philosophy Section
+
+Use your powerful brand voice copy (the version we drafted).
+
+Sprinkle in hooks and the “plate” philosophy.
+
+Maybe include testimonials or quotes if you have them.
+
+Media / Highlights / Gallery
+
+A visual section (image grid, carousel, videos) showing examples of your work.
+
+Hover captions, lightbox views, or short text overlays on images.
+
+For car wraps: before/after. For modeling: photo sets. For comedy: live show shots.
+
+Booking / Contact CTA
+
+A section with “Ready to Book?” headline.
+
+Simple form: Name, Service Type, Date, Contact Info, Message.
+
+Or direct buttons to email / phone / scheduling tool (if you use something like Calendly or similar).
+
+Footer
+
+Social media links.
+
+Copyright, logo, small tagline.
+
+Secondary navigation (Home, Terms, Privacy, etc.).
+
+Branding & Design Polishing
+
+Choose your color palette (primary, secondary, accent).
+
+Typography (heading font, body font).
+
+Consistent spacing, margins, padding.
+
+Button styles / hover effects / transitions.
+
+Make sure images are high resolution, compressed for web, and optimized.
+
+Mobile & Responsive Testing
+
+Test on multiple screen sizes.
+
+Adjust breakpoints for layout changes (e.g. columns to stacking).
+
+Ensure buttons are large enough to tap.
+
+SEO / Performance
+
+Add meta tags (title, description).
+
+Alt text for images.
+
+Minify CSS/JS, lazy load images, compress assets to speed load times.
+
+Use caching and optimize for page speed.
+
+Analytics + Tracking
+
+Install Google Analytics (or equivalent) so you can see who’s coming, where they click.
+
+Use heatmaps (Hotjar, etc.) to see how people scroll / what they click.
