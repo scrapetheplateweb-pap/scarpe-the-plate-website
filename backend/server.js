@@ -1,17 +1,52 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+const session = require("express-session");
 require("dotenv").config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json());
 
+if (!process.env.SESSION_SECRET && process.env.NODE_ENV === 'production') {
+  console.error('ERROR: SESSION_SECRET environment variable must be set in production');
+  process.exit(1);
+}
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'dev-secret-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60 * 24 * 7
+  }
+}));
+
+if (!process.env.SESSION_SECRET) {
+  console.warn('WARNING: Using default session secret. Set SESSION_SECRET environment variable for production use.');
+  console.warn('WARNING: Using in-memory session store. Sessions will be lost on server restart.');
+  console.warn('For production, configure a persistent store like connect-pg-simple.');
+}
+
+const authRouter = require("./routes/auth");
+const postsRouter = require("./routes/posts");
+const commentsRouter = require("./routes/comments");
+const userBookingsRouter = require("./routes/userBookings");
 const bookingsRouter = require("./routes/bookings");
 const adminRouter = require("./routes/admin");
 const chatProxyRouter = require("./routes/chatProxy");
 
+app.use("/api/auth", authRouter);
+app.use("/api/posts", postsRouter);
+app.use("/api/comments", commentsRouter);
+app.use("/api/user-bookings", userBookingsRouter);
 app.use("/api/bookings", bookingsRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/chat", chatProxyRouter);

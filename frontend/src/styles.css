@@ -27,8 +27,22 @@ nav {
   z-index: 100;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 2rem;
   border-bottom: 3px solid #f50505;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-auth {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
 }
 
 nav a {
@@ -49,6 +63,90 @@ nav a.active {
   background: rgba(245, 5, 5, 0.3);
   transform: skewX(-5deg);
   border: 2px solid #f50505;
+}
+
+.login-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+  color: white;
+  padding: 0.6rem 1.5rem;
+  font-size: 1.1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.login-button:hover {
+  background: white;
+  color: #9300c5;
+  transform: translateY(-2px);
+}
+
+.user-menu {
+  position: relative;
+}
+
+.user-menu-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+  color: white;
+  padding: 0.6rem 1.5rem;
+  font-size: 1.1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-menu-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: #2a262b;
+  border: 3px solid #9300c5;
+  border-radius: 6px;
+  padding: 1rem;
+  min-width: 250px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.user-info {
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #9300c5;
+  margin-bottom: 1rem;
+}
+
+.user-info p {
+  margin: 0.3rem 0;
+  color: #aaa9ad;
+  font-size: 1.1rem;
+}
+
+.user-info strong {
+  color: #f50505;
+}
+
+.user-email {
+  font-size: 0.9rem !important;
+  color: #888 !important;
+}
+
+.logout-button {
+  width: 100%;
+  padding: 0.7rem;
+  background: linear-gradient(135deg, #f50505 0%, #9300c5 100%);
+  border: 2px solid #f50505;
+  font-size: 1.1rem;
 }
 
 .container {

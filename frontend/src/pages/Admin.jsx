@@ -172,41 +172,85 @@ export default function Admin() {
     setTimeout(() => setSuccessMessage(''), 3000);
   };
 
-  const createPost = () => {
+  const loadPosts = async () => {
+    try {
+      const response = await fetch('/api/posts', {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(data);
+      }
+    } catch (error) {
+      console.error('Failed to load posts:', error);
+    }
+  };
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      loadPosts();
+    }
+  }, [isAuthenticated]);
+
+  const createPost = async () => {
     if (!newPost.title || !newPost.content) {
       alert('Please fill in title and content!');
       return;
     }
 
-    const postToAdd = {
-      ...newPost,
-      id: Date.now(),
-      createdAt: new Date().toISOString()
-    };
+    try {
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          page: newPost.page,
+          title: newPost.title,
+          content: newPost.content,
+          imageUrl: newPost.imageUrl,
+          videoUrl: newPost.videoUrl
+        })
+      });
 
-    const updatedPosts = [...posts, postToAdd];
-    setPosts(updatedPosts);
-    localStorage.setItem('sitePosts', JSON.stringify(updatedPosts));
-
-    setNewPost({
-      page: 'home',
-      title: '',
-      content: '',
-      imageUrl: '',
-      videoUrl: '',
-      comments: []
-    });
-
-    setSuccessMessage('Post created successfully!');
-    setTimeout(() => setSuccessMessage(''), 3000);
+      if (response.ok) {
+        await loadPosts();
+        setNewPost({
+          page: 'home',
+          title: '',
+          content: '',
+          imageUrl: '',
+          videoUrl: '',
+          comments: []
+        });
+        setSuccessMessage('Post created successfully!');
+        setTimeout(() => setSuccessMessage(''), 3000);
+      } else {
+        alert('Failed to create post');
+      }
+    } catch (error) {
+      console.error('Failed to create post:', error);
+      alert('Failed to create post');
+    }
   };
 
-  const deletePost = (postId) => {
-    const updatedPosts = posts.filter(p => p.id !== postId);
-    setPosts(updatedPosts);
-    localStorage.setItem('sitePosts', JSON.stringify(updatedPosts));
-    setSuccessMessage('Post deleted!');
-    setTimeout(() => setSuccessMessage(''), 3000);
+  const deletePost = async (postId) => {
+    try {
+      const response = await fetch(`/api/posts/${postId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        await loadPosts();
+        setSuccessMessage('Post deleted!');
+        setTimeout(() => setSuccessMessage(''), 3000);
+      } else {
+        alert('Failed to delete post');
+      }
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+      alert('Failed to delete post');
+    }
   };
 
   const addCommentToPost = (postIndex) => {

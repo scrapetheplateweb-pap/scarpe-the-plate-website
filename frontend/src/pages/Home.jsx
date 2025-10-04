@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import PostCard from '../components/PostCard';
 import './Home.css';
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    const savedPosts = localStorage.getItem('sitePosts');
-    if (savedPosts) {
-      const allPosts = JSON.parse(savedPosts);
-      setPosts(allPosts.filter(post => post.page === 'home'));
-    }
+    loadPosts();
   }, []);
+
+  const loadPosts = async () => {
+    try {
+      const response = await fetch('/api/posts?page=home', {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(data);
+      }
+    } catch (error) {
+      console.error('Failed to load posts:', error);
+    }
+  };
 
   return (
     <div className="home-page">

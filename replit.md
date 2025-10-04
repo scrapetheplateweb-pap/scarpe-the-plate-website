@@ -6,6 +6,17 @@ Scrape the Plate is a full-stack web application designed for managing entertain
 
 ## Recent Changes
 
+**October 4, 2025 - User Account System Implementation**:
+- Complete user authentication system with registration and login
+- PostgreSQL database with users, posts, likes, comments, and bookings tables
+- Backend API for authentication (register, login, logout, session management)
+- Backend routes for posts, comments, likes, and user-associated bookings
+- Frontend authentication UI: login/register modal, user profile dropdown in navigation
+- PostCard component with full like and comment functionality
+- Posts, likes, and comments stored in database (migrated from localStorage)
+- Users can create accounts, like posts, leave comments, and book appointments
+- Social media management: edit Facebook, Instagram, Twitter, YouTube URLs in admin panel
+
 **October 4, 2025 - Patch Management System Implementation**:
 - Implemented secure patch management system allowing code modifications through admin panel
 - JSON-based patch format supporting create, update, and delete file operations

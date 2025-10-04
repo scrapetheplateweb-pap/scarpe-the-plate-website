@@ -1,14 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import PostCard from '../components/PostCard';
 import './Media.css';
 
 export default function Media() {
   const [posts, setPosts] = useState([]);
   const [selectedPage, setSelectedPage] = useState('all');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const sitePosts = JSON.parse(localStorage.getItem('sitePosts') || '[]');
-    setPosts(sitePosts);
+    loadPosts();
   }, []);
+
+  const loadPosts = async () => {
+    try {
+      const response = await fetch('/api/posts', {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(data);
+      }
+    } catch (error) {
+      console.error('Failed to load posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredPosts = selectedPage === 'all' 
     ? posts 
@@ -55,47 +72,20 @@ export default function Media() {
           </button>
         </div>
 
-        {filteredPosts.length === 0 ? (
-          <div className="no-media">
-            <h2>No media yet!</h2>
-            <p>Check back soon as we add photos and videos from our work.</p>
-            <p className="admin-note">Admins can add media posts from the Admin panel.</p>
+        {loading ? (
+          <p style={{ textAlign: 'center', color: '#aaa9ad', fontSize: '1.2rem', padding: '2rem' }}>
+            Loading posts...
+          </p>
+        ) : filteredPosts.length > 0 ? (
+          <div className="posts-container">
+            {filteredPosts.map((post) => (
+              <PostCard key={post.id} post={post} onUpdate={loadPosts} />
+            ))}
           </div>
         ) : (
-          <div className="media-grid">
-            {filteredPosts.map((post) => (
-              <div key={post.id} className="media-card">
-                {post.image && (
-                  <div className="media-image">
-                    <img src={post.image} alt={post.title} />
-                  </div>
-                )}
-                {post.video && (
-                  <div className="media-video">
-                    <iframe
-                      src={post.video}
-                      title={post.title}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                )}
-                <div className="media-content">
-                  <h3>{post.title}</h3>
-                  <p>{post.content}</p>
-                  <div className="media-meta">
-                    <span className="media-category">{post.page.replace('-', ' ')}</span>
-                    <span className="media-date">{new Date(post.timestamp).toLocaleDateString()}</span>
-                  </div>
-                  {post.comments && post.comments.length > 0 && (
-                    <div className="media-comments">
-                      <p className="comment-count">💬 {post.comments.length} comment{post.comments.length !== 1 ? 's' : ''}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
+          <div style={{ textAlign: 'center', padding: '3rem' }}>
+            <h2 style={{ color: '#9300c5' }}>No Posts Yet</h2>
+            <p style={{ color: '#aaa9ad' }}>Check back later for updates!</p>
           </div>
         )}
       </div>
