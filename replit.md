@@ -54,6 +54,12 @@ Preferred communication style: Simple, everyday language.
 - **User Activity Analytics**: Dashboard with traffic analytics, real-time activity logs, top pages, and 30-day statistics.
 - **Patch Management**: Apply patches, view history, and rollback changes securely.
 - **Section Reordering**: Drag-and-drop interface to rearrange homepage sections with persistent database storage (enabled after admin authentication).
+- **Mobile Settings**: Comprehensive mobile customization controls:
+  - Section visibility toggles (hide/show homepage sections on mobile)
+  - Navigation menu customization (control which links appear in mobile menu)
+  - Font size adjustments (heading, subheading, body text)
+  - Layout modes (single-column stacked vs. 2-column grid)
+  - Mobile-specific content overrides (shorter titles and descriptions for mobile devices)
 
 ## External Dependencies
 
