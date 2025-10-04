@@ -91,17 +91,21 @@ export default function Checkout() {
     }
 
     try {
-      const total = getCartTotal();
+      const items = cart.map(item => ({
+        product_id: item.product_id,
+        quantity: item.quantity
+      }));
 
       const paymentResponse = await fetch('/api/stripe/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ amount: total })
+        body: JSON.stringify({ items })
       });
 
       if (!paymentResponse.ok) {
-        throw new Error('Failed to create payment intent');
+        const errorData = await paymentResponse.json();
+        throw new Error(errorData.error || 'Failed to create payment intent');
       }
 
       const paymentData = await paymentResponse.json();
@@ -109,7 +113,7 @@ export default function Checkout() {
       setOrderCreated(true);
     } catch (error) {
       console.error('Order creation error:', error);
-      alert('Failed to create order. Please try again.');
+      alert(error.message || 'Failed to create order. Please try again.');
     }
   };
 
@@ -117,12 +121,10 @@ export default function Checkout() {
     try {
       const items = cart.map(item => ({
         product_id: item.product_id,
-        product_name: item.name,
-        product_price: item.price,
         quantity: item.quantity
       }));
 
-      await fetch('/api/orders', {
+      const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -131,15 +133,20 @@ export default function Checkout() {
           customer_email: customerInfo.email,
           customer_phone: customerInfo.phone,
           shipping_address: customerInfo.address,
-          items,
-          total_amount: getCartTotal()
+          items
         })
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create order');
+      }
 
       await clearCart();
       navigate('/order-success');
     } catch (error) {
       console.error('Failed to finalize order:', error);
+      alert(error.message || 'Failed to finalize order');
     }
   };
 

@@ -56,10 +56,10 @@ router.get('/admin', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { customer_name, customer_email, customer_phone, shipping_address, items, total_amount } = req.body;
+    const { customer_name, customer_email, customer_phone, shipping_address, items } = req.body;
     const userId = req.session.userId || null;
 
-    if (!customer_name || !customer_email || !items || !total_amount) {
+    if (!customer_name || !customer_email || !items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -67,15 +67,50 @@ router.post('/', async (req, res) => {
     try {
       await client.query('BEGIN');
 
+      let serverTotalAmount = 0;
+      const validatedItems = [];
+
+      for (const item of items) {
+        if (!Number.isInteger(item.quantity) || item.quantity < 1) {
+          throw new Error(`Invalid quantity: must be a positive integer`);
+        }
+
+        const productCheck = await client.query(
+          'SELECT id, name, price, stock FROM products WHERE id = $1 FOR UPDATE',
+          [item.product_id]
+        );
+
+        if (productCheck.rows.length === 0) {
+          throw new Error(`Product not found`);
+        }
+
+        const product = productCheck.rows[0];
+
+        if (product.stock < item.quantity) {
+          throw new Error(`Insufficient stock for ${product.name}`);
+        }
+
+        const serverPrice = parseFloat(product.price);
+        const lineTotal = serverPrice * item.quantity;
+        serverTotalAmount += lineTotal;
+
+        validatedItems.push({
+          product_id: product.id,
+          product_name: product.name,
+          product_price: serverPrice,
+          quantity: item.quantity
+        });
+      }
+
       const orderResult = await client.query(
         `INSERT INTO orders (user_id, customer_name, customer_email, customer_phone, shipping_address, total_amount, status)
          VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-        [userId, customer_name, customer_email, customer_phone, shipping_address, total_amount, 'pending']
+        [userId, customer_name, customer_email, customer_phone, shipping_address, serverTotalAmount, 'pending']
       );
 
       const orderId = orderResult.rows[0].id;
 
-      for (const item of items) {
+      for (const item of validatedItems) {
         await client.query(
           `INSERT INTO order_items (order_id, product_id, product_name, product_price, quantity)
            VALUES ($1, $2, $3, $4, $5)`,
@@ -98,6 +133,13 @@ router.post('/', async (req, res) => {
     }
   } catch (error) {
     console.error('Create order error:', error);
+    
+    if (error.message.includes('not found') || 
+        error.message.includes('Insufficient stock') || 
+        error.message.includes('Invalid quantity')) {
+      return res.status(400).json({ error: error.message });
+    }
+    
     res.status(500).json({ error: 'Failed to create order' });
   }
 });

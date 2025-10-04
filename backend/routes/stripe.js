@@ -17,14 +17,39 @@ router.post('/create-payment-intent', async (req, res) => {
       return res.status(500).json({ error: 'Stripe is not configured. Please set STRIPE_SECRET_KEY.' });
     }
 
-    const { amount } = req.body;
+    const { items } = req.body;
 
-    if (!amount || amount <= 0) {
-      return res.status(400).json({ error: 'Invalid amount' });
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: 'Invalid cart items' });
+    }
+
+    const pool = require('../db');
+    let serverTotalAmount = 0;
+
+    for (const item of items) {
+      if (!Number.isInteger(item.quantity) || item.quantity < 1) {
+        return res.status(400).json({ error: 'Invalid quantity: must be a positive integer' });
+      }
+
+      const result = await pool.query(
+        'SELECT price FROM products WHERE id = $1',
+        [item.product_id]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(400).json({ error: 'Invalid product in cart' });
+      }
+
+      const serverPrice = parseFloat(result.rows[0].price);
+      serverTotalAmount += serverPrice * item.quantity;
+    }
+
+    if (serverTotalAmount <= 0) {
+      return res.status(400).json({ error: 'Invalid cart total' });
     }
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100),
+      amount: Math.round(serverTotalAmount * 100),
       currency: 'usd',
       automatic_payment_methods: {
         enabled: true,

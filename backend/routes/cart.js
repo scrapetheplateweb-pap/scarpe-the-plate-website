@@ -76,18 +76,22 @@ router.put('/update/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { quantity } = req.body;
+    const userId = req.session.userId || null;
+    const sessionId = req.sessionID;
 
     if (quantity < 1) {
       return res.status(400).json({ error: 'Quantity must be at least 1' });
     }
 
     const result = await pool.query(
-      'UPDATE cart_items SET quantity = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *',
-      [quantity, id]
+      userId
+        ? 'UPDATE cart_items SET quantity = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 AND user_id = $3 RETURNING *'
+        : 'UPDATE cart_items SET quantity = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 AND session_id = $3 RETURNING *',
+      [quantity, id, userId || sessionId]
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Cart item not found' });
+      return res.status(404).json({ error: 'Cart item not found or access denied' });
     }
 
     res.json(result.rows[0]);
@@ -100,7 +104,20 @@ router.put('/update/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    await pool.query('DELETE FROM cart_items WHERE id = $1', [id]);
+    const userId = req.session.userId || null;
+    const sessionId = req.sessionID;
+
+    const result = await pool.query(
+      userId
+        ? 'DELETE FROM cart_items WHERE id = $1 AND user_id = $2'
+        : 'DELETE FROM cart_items WHERE id = $1 AND session_id = $2',
+      [id, userId || sessionId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Cart item not found or access denied' });
+    }
+
     res.json({ message: 'Item removed from cart' });
   } catch (error) {
     console.error('Remove from cart error:', error);
@@ -110,17 +127,21 @@ router.delete('/:id', async (req, res) => {
 
 router.delete('/clear', async (req, res) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.session.userId || null;
     const sessionId = req.sessionID;
 
-    await pool.query(
+    const result = await pool.query(
       userId 
         ? 'DELETE FROM cart_items WHERE user_id = $1'
         : 'DELETE FROM cart_items WHERE session_id = $1',
       [userId || sessionId]
     );
 
-    res.json({ message: 'Cart cleared' });
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'No cart items found' });
+    }
+
+    res.json({ message: 'Cart cleared', count: result.rowCount });
   } catch (error) {
     console.error('Clear cart error:', error);
     res.status(500).json({ error: 'Failed to clear cart' });

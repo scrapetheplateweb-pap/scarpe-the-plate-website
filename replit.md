@@ -2,76 +2,7 @@
 
 ## Overview
 
-Scrape the Plate is a full-stack web application designed for managing entertainment services (comedy, car wraps, and modeling) with an integrated AI chatbot assistant. The system uses a microservices architecture with three main components: a React frontend, a Node.js/Express backend API, and a Python Flask chatbot service. The application features a content management system, booking system, and social media-style post creation with video support.
-
-## Recent Changes
-
-**October 4, 2025 - User Activity Tracking System**:
-- Complete user activity tracking and analytics system in admin panel
-- PostgreSQL user_activity table with indexes for performance
-- Backend activity logging on all key actions: register, login, posts, comments, likes, bookings
-- Admin dashboard with traffic analytics: total actions, unique users, page views, registrations
-- Real-time activity log showing all user actions with timestamps and details
-- Secure admin-only access to activity data (requires authentication)
-- Top pages analytics and 30-day statistics tracking
-- Activity filtering and configurable display limits (25-200 entries)
-
-**October 4, 2025 - Production Session Store Implementation**:
-- Upgraded from in-memory to PostgreSQL session store (connect-pg-simple)
-- SESSION_SECRET environment variable for secure session encryption
-- Sessions now persist across server restarts
-- Production-ready session configuration with secure cookies
-- Automatic session table creation in database
-
-**October 4, 2025 - User Account System Implementation**:
-- Complete user authentication system with registration and login
-- PostgreSQL database with users, posts, likes, comments, and bookings tables
-- Backend API for authentication (register, login, logout, session management)
-- Backend routes for posts, comments, likes, and user-associated bookings
-- Frontend authentication UI: login/register modal, user profile dropdown in navigation
-- PostCard component with full like and comment functionality
-- Posts, likes, and comments stored in database (migrated from localStorage)
-- Users can create accounts, like posts, leave comments, and book appointments
-- Social media management: edit Facebook, Instagram, Twitter, YouTube URLs in admin panel
-
-**October 4, 2025 - Patch Management System Implementation**:
-- Implemented secure patch management system allowing code modifications through admin panel
-- JSON-based patch format supporting create, update, and delete file operations
-- Comprehensive security measures: path validation, directory traversal prevention, error sanitization
-- Automatic backup system before updates/deletions with rollback capability
-- Patch history tracking with detailed operation logs and status reporting
-- Protected directories (node_modules, .git, backend/data) cannot be modified
-- All error messages sanitized to prevent filesystem path disclosure
-- Input validation: 50 ops/patch max, 1MB content limit, 100 patch history limit
-
-**October 4, 2025 - Complete Site Overhaul Following User Feedback**:
-- Redesigned Home page with bold hero section showing all three services (Comedy, Car Wrapping, Modeling)
-- Added "What We Do" services section with three-column grid layout and CTAs
-- Created dedicated About page with company history, philosophy, and brand story
-- Created Media/Gallery page with filtering by service type and post display
-- Created Contact page with booking form and service information
-- Implemented sticky navigation with all pages: Home | About | Comedy | Car Wrapping | Modeling | Media | Contact | Admin
-- Added Footer component with social media links, quick navigation, and company information
-- Enhanced CSS with better visual hierarchy, typography, spacing, and button hover effects
-- Added comprehensive SEO meta tags (title, description, keywords, Open Graph, Twitter cards)
-- Fixed missing formatDate function bug in service pages
-- All existing features preserved: admin panel, bookings, availability grid, posts, chatbot
-
-**October 3, 2025 - Complete Admin & Booking System**:
-- Updated color scheme from gold to red (#f50505) while maintaining Saints Row purple (#9300c5)
-- Enhanced admin panel with comprehensive content management system
-- Added post creation system with support for images, videos, and comments
-- Implemented booking/scheduling system on all service pages
-- Created admin interface to view and manage service bookings
-- Added video embedding support for YouTube and Vimeo URLs
-- All features use localStorage for data persistence
-
-**September 30, 2025 - GitHub Import Setup**:
-- Completed setup of GitHub import with missing configuration files
-- Created all frontend components (pages, ChatBot component)
-- Configured Vite with `allowedHosts: true` for Replit proxy environment
-- Set up unified workflow that starts all three services (backend, chatbot, frontend)
-- Configured VM deployment for production
+Scrape the Plate is a full-stack web application for managing entertainment services (comedy, car wraps, and modeling) with an integrated AI chatbot. It features a microservices architecture, a React frontend, a Node.js/Express backend, and a Python Flask chatbot. The application includes an e-commerce store with Stripe integration, a comprehensive user account system, a content management system, a booking system, and social media-style post creation with video support. The project also boasts an advanced patch management system for secure code modifications and a user activity tracking system for analytics.
 
 ## User Preferences
 
@@ -81,195 +12,78 @@ Preferred communication style: Simple, everyday language.
 
 ### Frontend Architecture
 
-**Technology Stack**: React 18 with Vite as the build tool and development server.
+**Technology Stack**: React 18 with Vite, React Router DOM v6.
 
-**Routing**: React Router DOM v6 for client-side navigation and multi-page application structure with 8 pages:
-- Home: Hero section, services overview, about/philosophy, media preview, booking CTAs
-- About: Company history, philosophy, why choose us, nationwide reach
-- Comedy: Service details, weekly availability grid, booking form, posts
-- Car Wrapping: Service details, weekly availability grid, booking form, posts
-- Modeling: Service details, weekly availability grid, booking form, posts
-- Media: Gallery page with filtering by service type, displays all posts
-- Contact: Contact information and booking inquiry form
-- Admin: Protected admin panel (access code 4922)
+**Styling**: Custom CSS with a Saints Row aesthetic using purple (#9300c5), red (#f50505), dark backgrounds, and the Teko font.
 
-**Development Server**: Vite configured to run on port 5000 with host binding to 0.0.0.0 for network accessibility. HMR (Hot Module Replacement) is configured with clientPort 443 for development in cloud environments.
-
-**API Communication**: Uses Vite's proxy configuration to forward `/api` requests to the backend server (http://127.0.0.1:3000), solving CORS issues during development and providing a unified development experience.
-
-**Styling**: Custom CSS with Saints Row game aesthetic using official colors:
-- Purple: #9300c5 (primary brand color)
-- Red: #f50505 (accent and call-to-action color)
-- Dark background: #1a1a1a
-- Component background: #2a262b
-- Font: Teko (bold, uppercase for headers)
-
-**Data Persistence**: Uses localStorage for client-side data storage:
-- `siteContent`: Stores editable page content (titles, descriptions)
-- `sitePosts`: Stores all posts with images, videos, and comments
-- `siteBookings`: Stores all service booking submissions
+**Core Features**:
+- **Navigation**: Sticky navigation with Home, About, Comedy, Car Wrapping, Modeling, Media, Contact, and Admin pages.
+- **E-commerce**: Product catalog, shopping cart with global state management (CartContext), checkout with Stripe Elements, order processing, and an admin panel for product CRUD.
+- **User Authentication**: Login/registration, user profiles, and session management.
+- **Content Management**: Dynamic editing of page titles, descriptions, and social media links via the admin panel.
+- **Booking System**: Forms on service pages, weekly availability grid, and admin management of bookings.
+- **Post System**: Creation of text, image, and video posts with commenting functionality. Posts are filterable by service type in the Media gallery.
+- **SEO**: Comprehensive meta tags (title, description, keywords, Open Graph, Twitter cards).
 
 ### Backend Architecture
 
-**Technology Stack**: Node.js with Express framework running on CommonJS module system.
+**Technology Stack**: Node.js with Express framework (CommonJS).
 
-**API Structure**: RESTful API design with modular route handlers organized by domain:
-- `/api/bookings` - Booking management endpoints
-- `/api/admin` - Administrative operations (patch management)
-- `/api/chat` - Chatbot proxy service
-
-**Server Configuration**: Binds to localhost (127.0.0.1) on port 3000, ensuring security by not exposing directly to external networks.
-
-**Cross-Origin Resource Sharing**: CORS middleware enabled to allow frontend communication.
-
-**Proxy Pattern**: The backend acts as a reverse proxy for the chatbot service, forwarding chat requests from the frontend to the Python Flask service.
+**API Structure**: RESTful API with modular route handlers for bookings, admin, and chat.
+- **Database**: PostgreSQL for users, posts, comments, likes, bookings, products, cart_items, orders, order_items, and user_activity.
+- **Session Management**: Production-ready PostgreSQL session store (connect-pg-simple) with secure cookies.
+- **User Management**: API for user registration, login, logout, and session handling.
+- **E-commerce**: API routes for products, cart operations, orders, and Stripe payment processing.
+- **Activity Tracking**: Logs key user actions (register, login, posts, comments, likes, bookings) to a PostgreSQL table.
+- **Patch Management**: Secure system for applying JSON-formatted code modifications (create, update, delete files) with path validation, directory traversal prevention, automatic backups, rollback capabilities, and detailed history tracking. Protected directories include `node_modules`, `.git`, and `backend/data`.
 
 ### Microservices Architecture
 
-**Chatbot Service**: Separate Python Flask application running on port 5001, providing AI chat functionality integrated with OpenAI API.
+**Chatbot Service**: Separate Python Flask application providing AI chat functionality.
 
-**Service Communication**: Internal HTTP communication between Node.js backend (port 3000) and Python chatbot service (port 5001) using localhost networking.
+**Service Communication**: The Node.js backend acts as a reverse proxy, forwarding frontend chat requests to the Python Flask service.
 
-### Admin Panel Features
+### Admin Panel Features (Access Code: 4922)
 
-**Access Control**: Protected by access code 4922 for security.
-
-**Content Management**:
-- Edit page titles and descriptions for all service pages
-- Edit social media links (Facebook, Instagram, Twitter, YouTube)
-- Changes apply instantly across the site
-- Reset to defaults option available
-
-**Post Management**:
-- Create posts for any service page (Home, Comedy, Car Wraps, Modeling)
-- Add titles, content, images (via URL), and videos (YouTube/Vimeo)
-- Add comments to posts
-- Delete posts
-- View all posts organized by page
-
-**Booking Management**:
-- View all service bookings with customer details
-- Track booking status (pending/completed)
-- Mark bookings as completed
-- Delete processed bookings
-- See booking timestamps and service page origin
-
-**Site Settings**:
-- View site statistics (total posts, total bookings)
-- Monitor site status
-- View configuration details
-
-**Patch Management System**:
-- Apply JSON-formatted patches to create, update, or delete files in the project
-- Automatic backup creation before any destructive operations (update/delete)
-- Comprehensive patch history with operation details and timestamps
-- One-click rollback to restore files from backups
-- Security features:
-  - Path validation preventing directory traversal attacks
-  - Protected directories (node_modules, .git, backend/data) cannot be modified
-  - Error message sanitization to prevent filesystem path disclosure
-  - Input limits: 50 operations per patch, 1MB content maximum
-- Patch operations tracked with success/failure status for each file
-- Detailed operation logs showing which files were modified, created, or deleted
-- Example patch format provided in UI with instructions
-
-### Booking System
-
-**Customer-Facing Features**:
-- Booking forms on all service pages (Home, Comedy, Car Wraps, Modeling)
-- Collect customer name, email, phone, date, time, and service details
-- Success confirmation message after submission
-- Form validation to ensure all required fields are filled
-
-**Admin Features**:
-- Centralized view of all bookings in admin panel
-- Filter bookings by service page
-- Track booking status
-- Customer contact information readily available
-- Timestamp tracking for all submissions
-
-### Post System
-
-**Content Types Supported**:
-- Text posts with title and description
-- Image posts (via image URL)
-- Video posts (YouTube and Vimeo embedding)
-- Mixed media posts (text + image + video)
-
-**Social Features**:
-- Comment system on all posts
-- Comment timestamps
-- Posts organized by service page
-- View post history in admin panel
-
-**Video Support**:
-- Automatic YouTube and Vimeo URL detection
-- Converts URLs to embedded players
-- Responsive video display
-- Fallback handling for invalid URLs
-
-## Design Patterns
-
-**Modular Route Organization**: Express routes separated into individual modules (`bookings.js`, `admin.js`, `chatProxy.js`) for maintainability and single responsibility.
-
-**Environment Configuration**: dotenv pattern for managing environment-specific variables across both backend services.
-
-**Error Handling**: Chatbot proxy implements try-catch with graceful degradation, returning user-friendly error messages when the chatbot service is unavailable.
-
-**Component-Based UI**: React components organized by feature with the following structure:
-- Components: Navigation (sticky nav bar), Footer (site footer with links), ChatBot (floating AI assistant)
-- Pages: Home, About, Comedy, CarWraps, Modeling, Media, Contact, Admin
-- Each page has its own CSS file for styling
-- Shared styles in styles.css for global elements
-
-**Client-Side State Management**: React hooks (useState, useEffect) for local state and localStorage integration for persistence.
-
-**Navigation System**: Sticky navigation bar with active state highlighting, responsive design for mobile
-
-**SEO Optimization**: Comprehensive meta tags including:
-- Page title, description, keywords
-- Open Graph tags for social media sharing
-- Twitter card metadata
-- Theme color and robots directives
+- **Content Management**: Edit page content, social media links, and reset to defaults.
+- **Post Management**: Create, edit, delete posts with image/video support, and manage comments.
+- **Booking Management**: View, track, mark as completed, and delete service bookings.
+- **E-commerce Management**: Full CRUD for products, inventory management.
+- **User Activity Analytics**: Dashboard with traffic analytics, real-time activity logs, top pages, and 30-day statistics.
+- **Patch Management**: Apply patches, view history, and rollback changes securely.
 
 ## External Dependencies
 
 ### Third-Party NPM Packages
 
 **Backend**:
-- `express` (v4.18.2) - Web application framework
-- `cors` (v2.8.5) - Cross-origin resource sharing middleware
-- `axios` (v1.6.7) - HTTP client for service-to-service communication
-- `dotenv` (v16.4.1) - Environment variable management
+- `express` (v4.18.2)
+- `cors` (v2.8.5)
+- `axios` (v1.6.7)
+- `dotenv` (v16.4.1)
+- `connect-pg-simple` (for PostgreSQL session store)
 
 **Frontend**:
-- `react` (v18.2.0) - UI library
-- `react-dom` (v18.2.0) - React DOM rendering
-- `react-router-dom` (v6.22.0) - Client-side routing
-- `vite` (v5.1.0) - Build tool and development server
-- `@vitejs/plugin-react` (v4.2.1) - React support for Vite
+- `react` (v18.2.0)
+- `react-dom` (v18.2.0)
+- `react-router-dom` (v6.22.0)
+- `vite` (v5.1.0)
+- `@vitejs/plugin-react` (v4.2.1)
 
 ### Python Dependencies
 
-- `flask` (v3.0.2) - Web framework for chatbot service
-- `flask-cors` (v4.0.0) - CORS support for Flask
-- `python-dotenv` (v1.0.1) - Environment configuration
-- `openai` (v1.12.0) - OpenAI API client for AI functionality
+- `flask` (v3.0.2)
+- `flask-cors` (v4.0.0)
+- `python-dotenv` (v1.0.1)
+- `openai` (v1.12.0)
 
 ### External Services
 
-**OpenAI API**: The chatbot service integrates with OpenAI's API for natural language processing and conversational AI capabilities. API key management through environment variables.
+- **OpenAI API**: Integrated with the Python chatbot service for AI functionality.
+- **Stripe**: Payment gateway for e-commerce transactions.
 
 ### Port Allocation
 
 - Frontend (Vite): Port 5000
 - Backend (Express): Port 3000
 - Chatbot Service (Flask): Port 5001
-
-All services bind to localhost (127.0.0.1) for security, with the frontend proxy handling external access.
-
-## Admin Access
-
-- Access Code: 4922
-- Login at: /admin page
-- Features: Content editing, post management, booking management, site settings
