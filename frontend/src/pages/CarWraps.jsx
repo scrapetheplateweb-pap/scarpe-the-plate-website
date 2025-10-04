@@ -98,18 +98,62 @@ export default function CarWraps() {
     return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
   };
 
-  const groupSlotsByDate = () => {
-    const grouped = {};
-    availability.forEach(slot => {
-      if (!grouped[slot.date]) {
-        grouped[slot.date] = [];
-      }
-      grouped[slot.date].push(slot);
+  // Generate weekly grid view
+  const generateWeeklyGrid = () => {
+    const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    const times = [
+      '06:00 AM', '07:00 AM', '08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM',
+      'Noon', '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM',
+      '06:00 PM', '07:00 PM', '08:00 PM', '09:00 PM', '10:00 PM', '11:00 PM',
+      'Midnight', '01:00 AM', '02:00 AM'
+    ];
+    
+    const today = new Date();
+    const currentDay = today.getDay();
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - (currentDay === 0 ? 6 : currentDay - 1));
+    
+    const weekDates = days.map((day, index) => {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + index);
+      return {
+        day,
+        date: date.toISOString().split('T')[0],
+        displayDate: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      };
     });
-    return grouped;
+    
+    const grid = {};
+    times.forEach(time => {
+      grid[time] = {};
+      weekDates.forEach(({date}) => {
+        grid[time][date] = null;
+      });
+    });
+    
+    availability.forEach(slot => {
+      const slotDate = slot.date;
+      const startTime = convertTo12Hour(slot.startTime);
+      
+      if (grid[startTime] && grid[startTime][slotDate] !== undefined) {
+        grid[startTime][slotDate] = slot;
+      }
+    });
+    
+    return { grid, times, weekDates };
   };
 
-  const groupedSlots = groupSlotsByDate();
+  const convertTo12Hour = (time24) => {
+    const [hours, minutes] = time24.split(':');
+    const hour = parseInt(hours);
+    if (hour === 0) return 'Midnight';
+    if (hour === 12 && minutes === '00') return 'Noon';
+    if (hour < 12) return `${hour.toString().padStart(2, '0')}:${minutes} AM`;
+    if (hour === 12) return `${hour}:${minutes} PM`;
+    return `${(hour - 12).toString().padStart(2, '0')}:${minutes} PM`;
+  };
+
+  const { grid, times, weekDates } = generateWeeklyGrid();
 
   return (
     <div className="container">
@@ -118,7 +162,7 @@ export default function CarWraps() {
         <p>{content}</p>
       </div>
 
-      {/* Availability Table */}
+      {/* Availability Schedule Grid */}
       <div style={{
         border: '2px solid #9300c5',
         borderRadius: '8px',
@@ -126,69 +170,132 @@ export default function CarWraps() {
         marginTop: '2rem',
         background: '#2a262b'
       }}>
-        <h2 style={{ color: '#9300c5', marginBottom: '1rem' }}>Available Time Slots</h2>
+        <h2 style={{ color: '#9300c5', marginBottom: '1rem' }}>Schedule Availability</h2>
         
         {availability.length === 0 ? (
           <p style={{ color: '#aaa9ad' }}>No time slots available at the moment. Please check back later.</p>
         ) : (
-          <div>
-            {Object.keys(groupedSlots).sort().map(date => (
-              <div key={date} style={{ marginBottom: '2rem' }}>
-                <h3 style={{ color: '#f50505', marginBottom: '1rem' }}>{formatDate(date)}</h3>
-                <table style={{
-                  width: '100%',
-                  borderCollapse: 'collapse',
-                  marginBottom: '1rem'
-                }}>
-                  <thead>
-                    <tr style={{ borderBottom: '2px solid #9300c5' }}>
-                      <th style={{ textAlign: 'left', padding: '0.8rem', color: '#f50505' }}>Time</th>
-                      <th style={{ textAlign: 'left', padding: '0.8rem', color: '#f50505' }}>Status</th>
-                      <th style={{ textAlign: 'left', padding: '0.8rem', color: '#f50505' }}>Notes</th>
-                      <th style={{ textAlign: 'center', padding: '0.8rem', color: '#f50505' }}>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {groupedSlots[date].map(slot => (
-                      <tr key={slot.id} style={{ borderBottom: '1px solid #666' }}>
-                        <td style={{ padding: '0.8rem', color: '#aaa9ad' }}>
-                          {slot.startTime} - {slot.endTime}
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              border: '2px solid #000',
+              background: 'white',
+              color: '#000'
+            }}>
+              <thead>
+                <tr style={{ background: '#f0f0f0' }}>
+                  <th style={{ 
+                    border: '1px solid #000', 
+                    padding: '0.6rem', 
+                    textAlign: 'center',
+                    minWidth: '100px',
+                    fontWeight: 'bold'
+                  }}></th>
+                  {weekDates.map(({day, displayDate}) => (
+                    <th key={day} style={{ 
+                      border: '1px solid #000', 
+                      padding: '0.6rem', 
+                      textAlign: 'center',
+                      minWidth: '80px',
+                      fontWeight: 'bold'
+                    }}>
+                      {day}
+                      <div style={{ fontSize: '0.75rem', fontWeight: 'normal' }}>{displayDate}</div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {times.map(time => (
+                  <tr key={time}>
+                    <td style={{ 
+                      border: '1px solid #000', 
+                      padding: '0.6rem',
+                      fontWeight: 'bold',
+                      background: '#f0f0f0',
+                      textAlign: 'center'
+                    }}>
+                      {time}
+                    </td>
+                    {weekDates.map(({date}) => {
+                      const slot = grid[time][date];
+                      return (
+                        <td 
+                          key={date} 
+                          onClick={() => slot && slot.status === 'available' && setSelectedSlot(slot)}
+                          style={{ 
+                            border: '1px solid #000', 
+                            padding: '0.4rem',
+                            textAlign: 'center',
+                            background: slot 
+                              ? (slot.status === 'available' ? '#90EE90' : '#FFB6C1')
+                              : 'white',
+                            cursor: slot && slot.status === 'available' ? 'pointer' : 'default',
+                            position: 'relative',
+                            minHeight: '35px'
+                          }}
+                        >
+                          {slot && (
+                            <div style={{ fontSize: '0.75rem' }}>
+                              {selectedSlot?.id === slot.id && (
+                                <div style={{ 
+                                  fontWeight: 'bold', 
+                                  color: '#006400',
+                                  marginBottom: '2px'
+                                }}>
+                                  ✓ SELECTED
+                                </div>
+                              )}
+                              {slot.status === 'available' ? 'P' : 'O'}
+                              {slot.notes && (
+                                <div style={{ fontSize: '0.65rem', marginTop: '2px' }}>
+                                  {slot.notes}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </td>
-                        <td style={{ padding: '0.8rem' }}>
-                          <span style={{
-                            padding: '0.3rem 0.6rem',
-                            borderRadius: '4px',
-                            fontSize: '0.85rem',
-                            fontWeight: 'bold',
-                            background: slot.status === 'available' ? '#00aa00' : '#666',
-                            color: 'white'
-                          }}>
-                            {slot.status === 'available' ? 'AVAILABLE' : 'BOOKED'}
-                          </span>
-                        </td>
-                        <td style={{ padding: '0.8rem', color: '#aaa9ad' }}>
-                          {slot.notes || '-'}
-                        </td>
-                        <td style={{ padding: '0.8rem', textAlign: 'center' }}>
-                          <button
-                            onClick={() => setSelectedSlot(slot)}
-                            disabled={slot.status === 'booked'}
-                            style={{
-                              padding: '0.5rem 1rem',
-                              fontSize: '0.9rem',
-                              opacity: slot.status === 'booked' ? 0.5 : 1,
-                              cursor: slot.status === 'booked' ? 'not-allowed' : 'pointer'
-                            }}
-                          >
-                            {selectedSlot?.id === slot.id ? 'Selected' : 'Select'}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ))}
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div style={{ 
+              marginTop: '1rem', 
+              padding: '0.8rem', 
+              background: '#3a363b',
+              borderRadius: '4px',
+              fontSize: '0.9rem',
+              color: '#aaa9ad'
+            }}>
+              <strong style={{ color: '#f50505' }}>Legend:</strong> 
+              <span style={{ marginLeft: '1rem' }}>
+                <span style={{ 
+                  display: 'inline-block', 
+                  width: '15px', 
+                  height: '15px', 
+                  background: '#90EE90', 
+                  border: '1px solid #000',
+                  marginRight: '5px',
+                  verticalAlign: 'middle'
+                }}></span> 
+                Available (P) - Click to select
+              </span>
+              <span style={{ marginLeft: '1rem' }}>
+                <span style={{ 
+                  display: 'inline-block', 
+                  width: '15px', 
+                  height: '15px', 
+                  background: '#FFB6C1', 
+                  border: '1px solid #000',
+                  marginRight: '5px',
+                  verticalAlign: 'middle'
+                }}></span> 
+                Booked (O)
+              </span>
+            </div>
           </div>
         )}
       </div>
