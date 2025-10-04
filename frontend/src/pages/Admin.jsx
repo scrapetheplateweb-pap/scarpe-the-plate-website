@@ -33,6 +33,16 @@ export default function Admin() {
   // Booking management states
   const [bookings, setBookings] = useState([]);
 
+  // Availability management states
+  const [availability, setAvailability] = useState({});
+  const [selectedService, setSelectedService] = useState('comedy');
+  const [newSlot, setNewSlot] = useState({
+    date: '',
+    startTime: '',
+    endTime: '',
+    notes: ''
+  });
+
   React.useEffect(() => {
     const savedPosts = localStorage.getItem('sitePosts');
     if (savedPosts) {
@@ -42,6 +52,11 @@ export default function Admin() {
     const savedBookings = localStorage.getItem('siteBookings');
     if (savedBookings) {
       setBookings(JSON.parse(savedBookings));
+    }
+
+    const savedAvailability = localStorage.getItem('availabilityByService');
+    if (savedAvailability) {
+      setAvailability(JSON.parse(savedAvailability));
     }
   }, []);
 
@@ -167,6 +182,65 @@ export default function Admin() {
     setTimeout(() => setSuccessMessage(''), 3000);
   };
 
+  const addTimeSlot = () => {
+    if (!newSlot.date || !newSlot.startTime || !newSlot.endTime) {
+      alert('Please fill in date, start time, and end time!');
+      return;
+    }
+
+    const slot = {
+      ...newSlot,
+      id: Date.now(),
+      status: 'available',
+      createdAt: new Date().toISOString()
+    };
+
+    const updated = { ...availability };
+    if (!updated[selectedService]) {
+      updated[selectedService] = [];
+    }
+    updated[selectedService].push(slot);
+    
+    setAvailability(updated);
+    localStorage.setItem('availabilityByService', JSON.stringify(updated));
+
+    setNewSlot({
+      date: '',
+      startTime: '',
+      endTime: '',
+      notes: ''
+    });
+
+    setSuccessMessage('Time slot added successfully!');
+    setTimeout(() => setSuccessMessage(''), 3000);
+  };
+
+  const deleteTimeSlot = (slotId) => {
+    const updated = { ...availability };
+    if (updated[selectedService]) {
+      updated[selectedService] = updated[selectedService].filter(s => s.id !== slotId);
+      setAvailability(updated);
+      localStorage.setItem('availabilityByService', JSON.stringify(updated));
+      setSuccessMessage('Time slot deleted!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    }
+  };
+
+  const toggleSlotAvailability = (slotId) => {
+    const updated = { ...availability };
+    if (updated[selectedService]) {
+      const slotIndex = updated[selectedService].findIndex(s => s.id === slotId);
+      if (slotIndex !== -1) {
+        const currentStatus = updated[selectedService][slotIndex].status;
+        updated[selectedService][slotIndex].status = currentStatus === 'available' ? 'booked' : 'available';
+        setAvailability(updated);
+        localStorage.setItem('availabilityByService', JSON.stringify(updated));
+        setSuccessMessage('Slot status updated!');
+        setTimeout(() => setSuccessMessage(''), 3000);
+      }
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="container">
@@ -202,6 +276,12 @@ export default function Admin() {
           style={{ opacity: activeTab === 'content' ? 1 : 0.6 }}
         >
           Content Management
+        </button>
+        <button 
+          onClick={() => setActiveTab('availability')}
+          style={{ opacity: activeTab === 'availability' ? 1 : 0.6 }}
+        >
+          Availability
         </button>
         <button 
           onClick={() => setActiveTab('bookings')}
@@ -704,6 +784,182 @@ export default function Admin() {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Availability Tab */}
+      {activeTab === 'availability' && (
+        <div className="admin-container">
+          <h3>Manage Service Availability</h3>
+          
+          {/* Service Selector */}
+          <div style={{ marginTop: '1.5rem', marginBottom: '2rem' }}>
+            <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+              Select Service:
+            </label>
+            <select
+              value={selectedService}
+              onChange={(e) => setSelectedService(e.target.value)}
+              style={{
+                width: '100%',
+                border: '2px solid #9300c5',
+                borderRadius: '4px',
+                padding: '0.8rem',
+                background: '#2a262b',
+                color: '#aaa9ad',
+                fontFamily: 'Teko, sans-serif',
+                fontSize: '1rem'
+              }}
+            >
+              <option value="comedy">Comedy</option>
+              <option value="carwraps">Car Wraps</option>
+              <option value="modeling">Modeling</option>
+            </select>
+          </div>
+
+          {/* Add New Time Slot */}
+          <div style={{
+            border: '2px solid #9300c5',
+            borderRadius: '8px',
+            padding: '1.5rem',
+            marginBottom: '2rem',
+            background: '#3a363b'
+          }}>
+            <h4 style={{ color: '#f50505', marginBottom: '1rem' }}>Add New Time Slot</h4>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', color: '#aaa9ad', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                  Date:
+                </label>
+                <input
+                  type="date"
+                  value={newSlot.date}
+                  onChange={(e) => setNewSlot({...newSlot, date: e.target.value})}
+                  style={{ width: '100%' }}
+                />
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', color: '#aaa9ad', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                  Start Time:
+                </label>
+                <input
+                  type="time"
+                  value={newSlot.startTime}
+                  onChange={(e) => setNewSlot({...newSlot, startTime: e.target.value})}
+                  style={{ width: '100%' }}
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', color: '#aaa9ad', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                  End Time:
+                </label>
+                <input
+                  type="time"
+                  value={newSlot.endTime}
+                  onChange={(e) => setNewSlot({...newSlot, endTime: e.target.value})}
+                  style={{ width: '100%' }}
+                />
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', color: '#aaa9ad', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                  Notes (optional):
+                </label>
+                <input
+                  type="text"
+                  value={newSlot.notes}
+                  onChange={(e) => setNewSlot({...newSlot, notes: e.target.value})}
+                  placeholder="e.g., Special event..."
+                  style={{ width: '100%' }}
+                />
+              </div>
+            </div>
+
+            <button onClick={addTimeSlot}>Add Time Slot</button>
+          </div>
+
+          {/* Existing Time Slots */}
+          <div>
+            <h4 style={{ color: '#f50505', marginBottom: '1rem' }}>
+              Existing Time Slots for {selectedService === 'comedy' ? 'Comedy' : selectedService === 'carwraps' ? 'Car Wraps' : 'Modeling'}
+            </h4>
+            
+            {(!availability[selectedService] || availability[selectedService].length === 0) ? (
+              <p style={{ color: '#aaa9ad' }}>No time slots created yet for this service.</p>
+            ) : (
+              <div>
+                {availability[selectedService]
+                  .sort((a, b) => new Date(a.date) - new Date(b.date))
+                  .map(slot => (
+                    <div key={slot.id} style={{
+                      border: '2px solid #9300c5',
+                      borderRadius: '8px',
+                      padding: '1rem',
+                      marginBottom: '1rem',
+                      background: '#2a262b',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ marginBottom: '0.5rem' }}>
+                          <strong style={{ color: '#f50505' }}>Date:</strong> {new Date(slot.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+                        </div>
+                        <div style={{ marginBottom: '0.5rem' }}>
+                          <strong style={{ color: '#f50505' }}>Time:</strong> {slot.startTime} - {slot.endTime}
+                        </div>
+                        {slot.notes && (
+                          <div style={{ marginBottom: '0.5rem' }}>
+                            <strong style={{ color: '#f50505' }}>Notes:</strong> {slot.notes}
+                          </div>
+                        )}
+                        <div>
+                          <span style={{
+                            padding: '0.3rem 0.6rem',
+                            borderRadius: '4px',
+                            fontSize: '0.85rem',
+                            fontWeight: 'bold',
+                            background: slot.status === 'available' ? '#00aa00' : '#666',
+                            color: 'white'
+                          }}>
+                            {slot.status === 'available' ? 'AVAILABLE' : 'BOOKED'}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+                        <button
+                          onClick={() => toggleSlotAvailability(slot.id)}
+                          style={{
+                            background: slot.status === 'available' ? '#666' : '#00aa00',
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.9rem',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          {slot.status === 'available' ? 'Mark as Booked' : 'Mark as Available'}
+                        </button>
+                        <button
+                          onClick={() => deleteTimeSlot(slot.id)}
+                          style={{
+                            background: '#f50505',
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.9rem'
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
