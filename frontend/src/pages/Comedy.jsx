@@ -153,6 +153,16 @@ export default function Comedy() {
 
   const { grid, times, weekDates } = generateWeeklyGrid();
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
+
   return (
     <div className="container">
       <div className="page-card">
