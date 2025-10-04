@@ -9,6 +9,7 @@ import CarWraps from './pages/CarWraps';
 import Modeling from './pages/Modeling';
 import Media from './pages/Media';
 import Contact from './pages/Contact';
+import Store from './pages/Store';
 import Admin from './pages/Admin';
 import ChatBot from './components/ChatBot';
 
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/modeling" element={<Modeling />} />
         <Route path="/media" element={<Media />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/store" element={<Store />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
       <Footer />

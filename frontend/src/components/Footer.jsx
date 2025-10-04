@@ -36,6 +36,7 @@ export default function Footer() {
             <Link to="/car-wraps">Car Wrapping</Link>
             <Link to="/modeling">Modeling</Link>
             <Link to="/media">Media</Link>
+            <Link to="/store">Store</Link>
             <Link to="/contact">Contact</Link>
           </div>
         </div>
