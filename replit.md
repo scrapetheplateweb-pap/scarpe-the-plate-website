@@ -6,6 +6,23 @@ Scrape the Plate is a full-stack web application designed for managing entertain
 
 ## Recent Changes
 
+**October 4, 2025 - User Activity Tracking System**:
+- Complete user activity tracking and analytics system in admin panel
+- PostgreSQL user_activity table with indexes for performance
+- Backend activity logging on all key actions: register, login, posts, comments, likes, bookings
+- Admin dashboard with traffic analytics: total actions, unique users, page views, registrations
+- Real-time activity log showing all user actions with timestamps and details
+- Secure admin-only access to activity data (requires authentication)
+- Top pages analytics and 30-day statistics tracking
+- Activity filtering and configurable display limits (25-200 entries)
+
+**October 4, 2025 - Production Session Store Implementation**:
+- Upgraded from in-memory to PostgreSQL session store (connect-pg-simple)
+- SESSION_SECRET environment variable for secure session encryption
+- Sessions now persist across server restarts
+- Production-ready session configuration with secure cookies
+- Automatic session table creation in database
+
 **October 4, 2025 - User Account System Implementation**:
 - Complete user authentication system with registration and login
 - PostgreSQL database with users, posts, likes, comments, and bookings tables
