@@ -108,6 +108,7 @@ Preferred communication style: Simple, everyday language.
 
 **Content Management**:
 - Edit page titles and descriptions for all service pages
+- Edit social media links (Facebook, Instagram, Twitter, YouTube)
 - Changes apply instantly across the site
 - Reset to defaults option available
 

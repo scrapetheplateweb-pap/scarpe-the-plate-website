@@ -1,8 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getSiteContent } from '../utils/content';
 import './Footer.css';
 
 export default function Footer() {
+  const [socialLinks, setSocialLinks] = useState({
+    facebook: '',
+    instagram: '',
+    twitter: '',
+    youtube: ''
+  });
+
+  useEffect(() => {
+    const content = getSiteContent();
+    if (content.social) {
+      setSocialLinks(content.social);
+    }
+  }, []);
+
   return (
     <footer className="footer">
       <div className="footer-content">
@@ -35,10 +50,26 @@ export default function Footer() {
         <div className="footer-section">
           <h4>Connect</h4>
           <div className="social-links">
-            <a href="#" className="social-link">Facebook</a>
-            <a href="#" className="social-link">Instagram</a>
-            <a href="#" className="social-link">Twitter</a>
-            <a href="#" className="social-link">YouTube</a>
+            {socialLinks.facebook && (
+              <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="social-link">Facebook</a>
+            )}
+            {socialLinks.instagram && (
+              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="social-link">Instagram</a>
+            )}
+            {socialLinks.twitter && (
+              <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="social-link">Twitter</a>
+            )}
+            {socialLinks.youtube && (
+              <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" className="social-link">YouTube</a>
+            )}
+            {!socialLinks.facebook && !socialLinks.instagram && !socialLinks.twitter && !socialLinks.youtube && (
+              <>
+                <a href="#" className="social-link">Facebook</a>
+                <a href="#" className="social-link">Instagram</a>
+                <a href="#" className="social-link">Twitter</a>
+                <a href="#" className="social-link">YouTube</a>
+              </>
+            )}
           </div>
         </div>
       </div>

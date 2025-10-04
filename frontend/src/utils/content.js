@@ -84,6 +84,12 @@ export const getSiteContent = () => {
       comedyContent: 'Book comedy shows and performances.',
       carWrapsContent: 'Professional car wrap services and designs.',
       modelingContent: 'Book modeling sessions and view our portfolio.'
+    },
+    social: {
+      facebook: '',
+      instagram: '',
+      twitter: '',
+      youtube: ''
     }
   };
 };

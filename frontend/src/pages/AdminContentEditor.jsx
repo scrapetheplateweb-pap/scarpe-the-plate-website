@@ -87,6 +87,14 @@ const defaultContent = {
     comedyContent: 'Book comedy shows and performances.',
     carWrapsContent: 'Professional car wrap services and designs.',
     modelingContent: 'Book modeling sessions and view our portfolio.'
+  },
+  
+  // Social Media
+  social: {
+    facebook: '',
+    instagram: '',
+    twitter: '',
+    youtube: ''
   }
 };
 
@@ -175,7 +183,8 @@ export default function AdminContentEditor({ onSave, successMessage }) {
           { id: 'about', label: 'About' },
           { id: 'media', label: 'Media' },
           { id: 'contact', label: 'Contact' },
-          { id: 'services', label: 'Services' }
+          { id: 'services', label: 'Services' },
+          { id: 'social', label: 'Social Media' }
         ].map(page => (
           <button
             key={page.id}
@@ -359,6 +368,31 @@ export default function AdminContentEditor({ onSave, successMessage }) {
               <TextInput label="Comedy Page Description" value={content.services.comedyContent} onChange={(v) => handleChange('services', 'comedyContent', v)} rows={2} />
               <TextInput label="Car Wraps Page Description" value={content.services.carWrapsContent} onChange={(v) => handleChange('services', 'carWrapsContent', v)} rows={2} />
               <TextInput label="Modeling Page Description" value={content.services.modelingContent} onChange={(v) => handleChange('services', 'modelingContent', v)} rows={2} />
+            </div>
+          </div>
+        )}
+
+        {/* SOCIAL MEDIA */}
+        {selectedPage === 'social' && (
+          <div>
+            <h4 style={{ color: '#f50505', marginBottom: '1rem', fontSize: '1.5rem' }}>Social Media Links</h4>
+            <p style={{ color: '#aaa9ad', marginBottom: '1rem' }}>
+              Enter the full URLs for your social media profiles. Leave blank to hide that social link.
+            </p>
+            
+            <div style={{ background: '#3a363b', padding: '1rem', borderRadius: '4px', marginBottom: '1.5rem' }}>
+              <TextInput label="Facebook URL" value={content.social.facebook} onChange={(v) => handleChange('social', 'facebook', v)} />
+              <TextInput label="Instagram URL" value={content.social.instagram} onChange={(v) => handleChange('social', 'instagram', v)} />
+              <TextInput label="Twitter URL" value={content.social.twitter} onChange={(v) => handleChange('social', 'twitter', v)} />
+              <TextInput label="YouTube URL" value={content.social.youtube} onChange={(v) => handleChange('social', 'youtube', v)} />
+            </div>
+            
+            <div style={{ background: '#3a363b', padding: '1rem', borderRadius: '4px', fontSize: '0.9rem', color: '#aaa9ad' }}>
+              <p style={{ margin: 0, marginBottom: '0.5rem' }}><strong style={{ color: '#f50505' }}>Examples:</strong></p>
+              <p style={{ margin: 0, marginBottom: '0.3rem' }}>• Facebook: https://facebook.com/yourpage</p>
+              <p style={{ margin: 0, marginBottom: '0.3rem' }}>• Instagram: https://instagram.com/yourusername</p>
+              <p style={{ margin: 0, marginBottom: '0.3rem' }}>• Twitter: https://twitter.com/yourusername</p>
+              <p style={{ margin: 0 }}>• YouTube: https://youtube.com/@yourchannel</p>
             </div>
           </div>
         )}
