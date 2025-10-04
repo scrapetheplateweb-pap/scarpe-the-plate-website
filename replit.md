@@ -23,6 +23,7 @@ Preferred communication style: Simple, everyday language.
 - **Content Management**: Dynamic editing of page titles, descriptions, and social media links via the admin panel.
 - **Booking System**: Forms on service pages, weekly availability grid, and admin management of bookings.
 - **Post System**: Creation of text, image, and video posts with commenting functionality. Posts are filterable by service type in the Media gallery.
+- **Drag & Drop Section Reordering**: Admins can rearrange homepage sections using intuitive drag-and-drop controls with persistent ordering stored in the database.
 - **SEO**: Comprehensive meta tags (title, description, keywords, Open Graph, Twitter cards).
 
 ### Backend Architecture
@@ -30,9 +31,10 @@ Preferred communication style: Simple, everyday language.
 **Technology Stack**: Node.js with Express framework (CommonJS).
 
 **API Structure**: RESTful API with modular route handlers for bookings, admin, and chat.
-- **Database**: PostgreSQL for users, posts, comments, likes, bookings, products, cart_items, orders, order_items, and user_activity.
-- **Session Management**: Production-ready PostgreSQL session store (connect-pg-simple) with secure cookies.
+- **Database**: PostgreSQL for users, posts, comments, likes, bookings, products, cart_items, orders, order_items, user_activity, job_applications, and page_sections.
+- **Session Management**: Production-ready PostgreSQL session store (connect-pg-simple) with secure cookies and session-based admin authentication.
 - **User Management**: API for user registration, login, logout, and session handling.
+- **Admin Authentication**: Session-based admin verification system using access code (4922) with backend enforcement.
 - **E-commerce**: API routes for products, cart operations, orders, and Stripe payment processing.
 - **Activity Tracking**: Logs key user actions (register, login, posts, comments, likes, bookings) to a PostgreSQL table.
 - **Patch Management**: Secure system for applying JSON-formatted code modifications (create, update, delete files) with path validation, directory traversal prevention, automatic backups, rollback capabilities, and detailed history tracking. Protected directories include `node_modules`, `.git`, and `backend/data`.
@@ -51,6 +53,7 @@ Preferred communication style: Simple, everyday language.
 - **E-commerce Management**: Full CRUD for products, inventory management.
 - **User Activity Analytics**: Dashboard with traffic analytics, real-time activity logs, top pages, and 30-day statistics.
 - **Patch Management**: Apply patches, view history, and rollback changes securely.
+- **Section Reordering**: Drag-and-drop interface to rearrange homepage sections with persistent database storage (enabled after admin authentication).
 
 ## External Dependencies
 
@@ -69,6 +72,7 @@ Preferred communication style: Simple, everyday language.
 - `react-router-dom` (v6.22.0)
 - `vite` (v5.1.0)
 - `@vitejs/plugin-react` (v4.2.1)
+- `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities` (drag-and-drop functionality)
 
 ### Python Dependencies
 

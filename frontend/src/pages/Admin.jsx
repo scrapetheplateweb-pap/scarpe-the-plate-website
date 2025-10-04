@@ -72,13 +72,29 @@ export default function Admin() {
     }
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (accessCode === '4922') {
-      setIsAuthenticated(true);
-      setError('');
-    } else {
-      setError('Invalid access code!');
+    try {
+      const response = await fetch('/api/admin-auth/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ accessCode })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsAuthenticated(true);
+        setError('');
+      } else {
+        setError('Invalid access code!');
+        setAccessCode('');
+      }
+    } catch (error) {
+      setError('Authentication failed. Please try again.');
       setAccessCode('');
     }
   };

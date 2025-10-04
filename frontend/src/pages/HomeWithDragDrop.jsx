@@ -33,12 +33,12 @@ export default function HomeWithDragDrop() {
 
   const checkAdminStatus = async () => {
     try {
-      const response = await fetch('/api/auth/session', {
+      const response = await fetch('/api/admin-auth/status', {
         credentials: 'include'
       });
       if (response.ok) {
         const data = await response.json();
-        setIsAdmin(!!data.user);
+        setIsAdmin(data.isAdmin === true);
       }
     } catch (error) {
       console.error('Failed to check admin status:', error);

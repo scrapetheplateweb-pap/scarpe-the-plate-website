@@ -56,8 +56,10 @@ const ordersRouter = require("./routes/orders");
 const stripeRouter = require("./routes/stripe");
 const careersRouter = require("./routes/careers");
 const sectionsRouter = require("./routes/sections");
+const adminAuthRouter = require("./routes/admin-auth");
 
 app.use("/api/auth", authRouter);
+app.use("/api/admin-auth", adminAuthRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/user-bookings", userBookingsRouter);

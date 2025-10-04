@@ -20,8 +20,8 @@ router.get('/:page', async (req, res) => {
 
 router.post('/:page/reorder', async (req, res) => {
   try {
-    if (!req.session.userId) {
-      return res.status(401).json({ error: 'Admin authentication required' });
+    if (!req.session.isAdmin) {
+      return res.status(403).json({ error: 'Admin privileges required' });
     }
 
     const { page } = req.params;
@@ -69,8 +69,8 @@ router.post('/:page/reorder', async (req, res) => {
 
 router.patch('/:page/:sectionId/visibility', async (req, res) => {
   try {
-    if (!req.session.userId) {
-      return res.status(401).json({ error: 'Admin authentication required' });
+    if (!req.session.isAdmin) {
+      return res.status(403).json({ error: 'Admin privileges required' });
     }
 
     const { page, sectionId } = req.params;
