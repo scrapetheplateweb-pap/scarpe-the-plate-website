@@ -12,9 +12,6 @@ echo "Chatbot PID: $CHATBOT_PID"
 
 sleep 2
 
-echo "Building frontend..."
-cd frontend
-npm run build
-
 echo "Starting production server on port 5000..."
+cd frontend
 npx serve -s dist -l 5000 --no-clipboard
