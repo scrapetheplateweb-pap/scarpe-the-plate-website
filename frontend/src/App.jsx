@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 import HomeWithDragDrop from './pages/HomeWithDragDrop';
 import About from './pages/About';
 import Comedy from './pages/Comedy';
@@ -20,6 +21,7 @@ import ChatBot from './components/ChatBot';
 export default function App() {
   return (
     <div>
+      <ScrollToTop />
       <Navigation />
       <Routes>
         <Route path="/" element={<HomeWithDragDrop />} />
