@@ -68,7 +68,9 @@ export default function Home() {
             From Atlanta to the Carolinas, to Virginia, and now nationwide—we've been setting the standard in entertainment since day one.
           </p>
           <p className="about-highlight">
-            This isn't just a brand. This isn't just business. This is Scape the Plate.
+            This isn't just a brand. This isn't just business.
+            <br /><br />
+            This is Scape the Plate.
           </p>
           <p className="philosophy-quote">
             "For us, scraping the plate ain't about being full. It's about delivering value, creating unforgettable experiences, and making sure nobody leaves empty-handed."

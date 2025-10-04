@@ -13,7 +13,7 @@ const defaultContent = {
     modelingDesc: 'Professional models available for photo shoots, branding campaigns, promotions, and events—ready to put your vision in the spotlight.',
     philosophyHeading: 'Our Philosophy',
     philosophyP1: "From Atlanta to the Carolinas, to Virginia, and now nationwide—we've been setting the standard in entertainment since day one.",
-    philosophyHighlight: "This isn't just a brand. This isn't just business. This is Scape the Plate.",
+    philosophyHighlight: "This isn't just a brand. This isn't just business.\n\nThis is Scape the Plate.",
     philosophyQuote: "For us, scraping the plate ain't about being full. It's about delivering value, creating unforgettable experiences, and making sure nobody leaves empty-handed.",
     philosophyP2: "You don't just consume entertainment with us—you become part of it. Whether you're laughing at one of our comedy shows, turning heads in a freshly wrapped ride, or stepping in front of the camera for a modeling gig, you're not a spectator. You're in the mix.",
     mediaHeading: 'Our Work',
