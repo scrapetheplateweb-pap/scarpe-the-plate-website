@@ -49,6 +49,7 @@ const userBookingsRouter = require("./routes/userBookings");
 const bookingsRouter = require("./routes/bookings");
 const adminRouter = require("./routes/admin");
 const chatProxyRouter = require("./routes/chatProxy");
+const activityRouter = require("./routes/activity");
 
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postsRouter);
@@ -57,6 +58,7 @@ app.use("/api/user-bookings", userBookingsRouter);
 app.use("/api/bookings", bookingsRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/chat", chatProxyRouter);
+app.use("/api/activity", activityRouter);
 
 app.get("/api", (req, res) => {
   res.json({ message: "Scrape the Plate v4 Backend API" });

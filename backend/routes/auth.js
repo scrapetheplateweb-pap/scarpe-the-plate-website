@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const pool = require('../db');
+const { logActivity } = require('../utils/activityLogger');
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
@@ -34,6 +35,8 @@ router.post('/register', async (req, res) => {
     const user = result.rows[0];
     req.session.userId = user.id;
     req.session.username = user.username;
+
+    await logActivity(req, 'register', `New user registered: ${user.username}`);
 
     res.json({
       id: user.id,
@@ -75,6 +78,8 @@ router.post('/login', async (req, res) => {
     req.session.userId = user.id;
     req.session.username = user.username;
 
+    await logActivity(req, 'login', `User logged in: ${user.username}`);
+
     res.json({
       id: user.id,
       username: user.username,
@@ -88,13 +93,19 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ error: 'Logout failed' });
-    }
-    res.json({ message: 'Logged out successfully' });
-  });
+router.post('/logout', async (req, res) => {
+  try {
+    await logActivity(req, 'logout', `User logged out`);
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ error: 'Logout failed' });
+      }
+      res.json({ message: 'Logged out successfully' });
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ error: 'Logout failed' });
+  }
 });
 
 router.get('/me', async (req, res) => {

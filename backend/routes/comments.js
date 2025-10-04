@@ -1,5 +1,6 @@
 const express = require('express');
 const pool = require('../db');
+const { logActivity } = require('../utils/activityLogger');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -53,6 +54,8 @@ router.post('/', async (req, res) => {
       [userId]
     );
 
+    await logActivity(req, 'comment_created', `Commented on post ID: ${postId}`);
+
     res.json({
       ...comment,
       username: userResult.rows[0].username,
@@ -84,6 +87,7 @@ router.delete('/:id', async (req, res) => {
     }
 
     await pool.query('DELETE FROM comments WHERE id = $1', [id]);
+    await logActivity(req, 'comment_deleted', `Deleted comment ID: ${id}`);
     res.json({ message: 'Comment deleted successfully' });
   } catch (error) {
     console.error('Delete comment error:', error);

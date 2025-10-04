@@ -1,5 +1,6 @@
 const express = require('express');
 const pool = require('../db');
+const { logActivity } = require('../utils/activityLogger');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -46,6 +47,8 @@ router.post('/', async (req, res) => {
       [page, title || '', content || '', imageUrl || null, videoUrl || null, req.session.userId]
     );
 
+    await logActivity(req, 'post_created', `Created post: ${title || 'Untitled'}`, page);
+
     res.json(result.rows[0]);
   } catch (error) {
     console.error('Create post error:', error);
@@ -71,6 +74,7 @@ router.delete('/:id', async (req, res) => {
     }
 
     await pool.query('DELETE FROM posts WHERE id = $1', [id]);
+    await logActivity(req, 'post_deleted', `Deleted post ID: ${id}`);
     res.json({ message: 'Post deleted successfully' });
   } catch (error) {
     console.error('Delete post error:', error);
@@ -94,9 +98,11 @@ router.post('/:id/like', async (req, res) => {
 
     if (existingLike.rows.length > 0) {
       await pool.query('DELETE FROM likes WHERE post_id = $1 AND user_id = $2', [id, userId]);
+      await logActivity(req, 'unlike', `Unliked post ID: ${id}`);
       res.json({ liked: false });
     } else {
       await pool.query('INSERT INTO likes (post_id, user_id) VALUES ($1, $2)', [id, userId]);
+      await logActivity(req, 'like', `Liked post ID: ${id}`);
       res.json({ liked: true });
     }
   } catch (error) {

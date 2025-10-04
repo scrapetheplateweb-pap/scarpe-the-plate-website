@@ -1,5 +1,6 @@
 const express = require('express');
 const pool = require('../db');
+const { logActivity } = require('../utils/activityLogger');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -38,6 +39,8 @@ router.post('/', async (req, res) => {
        RETURNING *`,
       [userId, name, email, phone || '', servicePage, bookingDate, bookingTime, details || '']
     );
+
+    await logActivity(req, 'booking_created', `Booking for ${servicePage} on ${bookingDate}`, servicePage);
 
     res.json(result.rows[0]);
   } catch (error) {
