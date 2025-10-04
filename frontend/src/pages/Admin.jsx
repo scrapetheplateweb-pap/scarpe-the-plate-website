@@ -6,7 +6,8 @@ export default function Admin() {
   const [accessCode, setAccessCode] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('patches');
+  const [activeTab, setActiveTab] = useState('content');
+  const [contentSection, setContentSection] = useState('editor');
   
   // Content management states
   const [homeTitle, setHomeTitle] = useState('Welcome to Scrape the Plate');
@@ -197,22 +198,10 @@ export default function Admin() {
       {/* Tab Navigation */}
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
         <button 
-          onClick={() => setActiveTab('patches')}
-          style={{ opacity: activeTab === 'patches' ? 1 : 0.6 }}
-        >
-          Patch Management
-        </button>
-        <button 
           onClick={() => setActiveTab('content')}
           style={{ opacity: activeTab === 'content' ? 1 : 0.6 }}
         >
-          Content Editor
-        </button>
-        <button 
-          onClick={() => setActiveTab('posts')}
-          style={{ opacity: activeTab === 'posts' ? 1 : 0.6 }}
-        >
-          Post Manager
+          Content Management
         </button>
         <button 
           onClick={() => setActiveTab('bookings')}
@@ -242,343 +231,382 @@ export default function Admin() {
         </div>
       )}
 
-      {/* Patch Management Tab */}
-      {activeTab === 'patches' && (
-        <div className="admin-container">
-          <h3>Patch Management</h3>
-          <button onClick={applyPatch} disabled={loading}>
-            {loading ? 'Applying...' : 'Apply Patch'}
-          </button>
-          <div style={{ marginTop: '1.5rem' }}>
-            <h3>Patch History:</h3>
-            {patches.map((patch, i) => (
-              <div key={i} className="patch-item">{patch}</div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Content Editor Tab */}
+      {/* Content Management Tab */}
       {activeTab === 'content' && (
         <div className="admin-container">
-          <h3>Edit Site Content</h3>
-          
-          <div style={{ marginTop: '1.5rem' }}>
-            <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              Home Page Title:
-            </label>
-            <input
-              type="text"
-              value={homeTitle}
-              onChange={(e) => setHomeTitle(e.target.value)}
-              style={{ width: '100%', marginBottom: '1rem' }}
-            />
-
-            <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              Home Page Description:
-            </label>
-            <textarea
-              value={homeDescription}
-              onChange={(e) => setHomeDescription(e.target.value)}
-              rows={3}
+          {/* Sub Navigation */}
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+            <button 
+              onClick={() => setContentSection('editor')}
               style={{ 
-                width: '100%', 
-                marginBottom: '1rem',
-                border: '2px solid #9300c5',
-                borderRadius: '4px',
-                padding: '0.8rem',
-                background: '#2a262b',
-                color: '#aaa9ad',
-                fontFamily: 'Teko, sans-serif',
-                fontSize: '1rem',
-                resize: 'vertical'
-              }}
-            />
-
-            <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              Comedy Page Content:
-            </label>
-            <textarea
-              value={comedyContent}
-              onChange={(e) => setComedyContent(e.target.value)}
-              rows={2}
-              style={{ 
-                width: '100%', 
-                marginBottom: '1rem',
-                border: '2px solid #9300c5',
-                borderRadius: '4px',
-                padding: '0.8rem',
-                background: '#2a262b',
-                color: '#aaa9ad',
-                fontFamily: 'Teko, sans-serif',
-                fontSize: '1rem',
-                resize: 'vertical'
-              }}
-            />
-
-            <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              Car Wraps Page Content:
-            </label>
-            <textarea
-              value={carWrapsContent}
-              onChange={(e) => setCarWrapsContent(e.target.value)}
-              rows={2}
-              style={{ 
-                width: '100%', 
-                marginBottom: '1rem',
-                border: '2px solid #9300c5',
-                borderRadius: '4px',
-                padding: '0.8rem',
-                background: '#2a262b',
-                color: '#aaa9ad',
-                fontFamily: 'Teko, sans-serif',
-                fontSize: '1rem',
-                resize: 'vertical'
-              }}
-            />
-
-            <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              Modeling Page Content:
-            </label>
-            <textarea
-              value={modelingContent}
-              onChange={(e) => setModelingContent(e.target.value)}
-              rows={2}
-              style={{ 
-                width: '100%', 
-                marginBottom: '1rem',
-                border: '2px solid #9300c5',
-                borderRadius: '4px',
-                padding: '0.8rem',
-                background: '#2a262b',
-                color: '#aaa9ad',
-                fontFamily: 'Teko, sans-serif',
-                fontSize: '1rem',
-                resize: 'vertical'
-              }}
-            />
-
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <button onClick={saveContentChanges}>Save Changes</button>
-              <button onClick={resetContent} style={{ background: 'linear-gradient(135deg, #3a363b 0%, #666 100%)' }}>
-                Reset to Defaults
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Post Manager Tab */}
-      {activeTab === 'posts' && (
-        <div className="admin-container">
-          <h3>Create New Post</h3>
-          
-          <div style={{ marginTop: '1.5rem' }}>
-            <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              Select Page:
-            </label>
-            <select
-              value={newPost.page}
-              onChange={(e) => setNewPost({...newPost, page: e.target.value})}
-              style={{
-                width: '100%',
-                marginBottom: '1rem',
-                border: '2px solid #9300c5',
-                borderRadius: '4px',
-                padding: '0.8rem',
-                background: '#2a262b',
-                color: '#aaa9ad',
-                fontFamily: 'Teko, sans-serif',
-                fontSize: '1rem'
+                opacity: contentSection === 'editor' ? 1 : 0.6,
+                padding: '0.6rem 1.2rem',
+                fontSize: '0.95rem'
               }}
             >
-              <option value="home">Home</option>
-              <option value="comedy">Comedy</option>
-              <option value="carwraps">Car Wraps</option>
-              <option value="modeling">Modeling</option>
-            </select>
-
-            <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              Post Title:
-            </label>
-            <input
-              type="text"
-              value={newPost.title}
-              onChange={(e) => setNewPost({...newPost, title: e.target.value})}
-              placeholder="Enter post title..."
-              style={{ width: '100%', marginBottom: '1rem' }}
-            />
-
-            <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              Post Content:
-            </label>
-            <textarea
-              value={newPost.content}
-              onChange={(e) => setNewPost({...newPost, content: e.target.value})}
-              placeholder="Enter post content..."
-              rows={4}
+              Content Editor
+            </button>
+            <button 
+              onClick={() => setContentSection('posts')}
               style={{ 
-                width: '100%', 
-                marginBottom: '1rem',
-                border: '2px solid #9300c5',
-                borderRadius: '4px',
-                padding: '0.8rem',
-                background: '#2a262b',
-                color: '#aaa9ad',
-                fontFamily: 'Teko, sans-serif',
-                fontSize: '1rem',
-                resize: 'vertical'
+                opacity: contentSection === 'posts' ? 1 : 0.6,
+                padding: '0.6rem 1.2rem',
+                fontSize: '0.95rem'
               }}
-            />
-
-            <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              Image URL:
-            </label>
-            <input
-              type="text"
-              value={newPost.imageUrl}
-              onChange={(e) => setNewPost({...newPost, imageUrl: e.target.value})}
-              placeholder="Enter image URL (optional)..."
-              style={{ width: '100%', marginBottom: '1rem' }}
-            />
-
-            <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              Video URL:
-            </label>
-            <input
-              type="text"
-              value={newPost.videoUrl}
-              onChange={(e) => setNewPost({...newPost, videoUrl: e.target.value})}
-              placeholder="Enter video URL (YouTube, Vimeo, etc. - optional)..."
-              style={{ width: '100%', marginBottom: '1rem' }}
-            />
-
-            <button onClick={createPost}>Create Post</button>
+            >
+              Post Manager
+            </button>
+            <button 
+              onClick={() => setContentSection('patches')}
+              style={{ 
+                opacity: contentSection === 'patches' ? 1 : 0.6,
+                padding: '0.6rem 1.2rem',
+                fontSize: '0.95rem'
+              }}
+            >
+              Patch Management
+            </button>
           </div>
 
-          {/* Existing Posts */}
-          <div style={{ marginTop: '2rem' }}>
-            <h3>Existing Posts</h3>
-            {posts.length === 0 ? (
-              <p style={{ color: '#aaa9ad' }}>No posts yet. Create your first post above!</p>
-            ) : (
-              posts.map((post, index) => (
-                <div key={post.id} style={{
-                  border: '2px solid #9300c5',
-                  borderRadius: '8px',
-                  padding: '1rem',
-                  marginBottom: '1rem',
-                  background: '#2a262b'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
-                    <div>
-                      <span style={{
-                        background: '#f50505',
-                        color: 'white',
-                        padding: '0.3rem 0.6rem',
-                        borderRadius: '4px',
-                        fontSize: '0.8rem',
-                        fontWeight: 'bold'
-                      }}>
-                        {post.page.toUpperCase()}
-                      </span>
-                      <h4 style={{ color: '#9300c5', marginTop: '0.5rem' }}>{post.title}</h4>
-                    </div>
-                    <button 
-                      onClick={() => deletePost(post.id)}
-                      style={{ 
-                        background: '#f50505',
-                        padding: '0.5rem 1rem',
-                        fontSize: '0.9rem'
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </div>
+          {/* Content Editor Section */}
+          {contentSection === 'editor' && (
+            <div>
+              <h3>Edit Site Content</h3>
+              
+              <div style={{ marginTop: '1.5rem' }}>
+                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  Home Page Title:
+                </label>
+                <input
+                  type="text"
+                  value={homeTitle}
+                  onChange={(e) => setHomeTitle(e.target.value)}
+                  style={{ width: '100%', marginBottom: '1rem' }}
+                />
 
-                  <p style={{ color: '#aaa9ad', marginBottom: '1rem' }}>{post.content}</p>
+                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  Home Page Description:
+                </label>
+                <textarea
+                  value={homeDescription}
+                  onChange={(e) => setHomeDescription(e.target.value)}
+                  rows={3}
+                  style={{ 
+                    width: '100%', 
+                    marginBottom: '1rem',
+                    border: '2px solid #9300c5',
+                    borderRadius: '4px',
+                    padding: '0.8rem',
+                    background: '#2a262b',
+                    color: '#aaa9ad',
+                    fontFamily: 'Teko, sans-serif',
+                    fontSize: '1rem',
+                    resize: 'vertical'
+                  }}
+                />
 
-                  {post.imageUrl && (
-                    <div style={{ marginBottom: '1rem' }}>
-                      <strong style={{ color: '#f50505' }}>Image:</strong> {post.imageUrl}
-                    </div>
-                  )}
+                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  Comedy Page Content:
+                </label>
+                <textarea
+                  value={comedyContent}
+                  onChange={(e) => setComedyContent(e.target.value)}
+                  rows={2}
+                  style={{ 
+                    width: '100%', 
+                    marginBottom: '1rem',
+                    border: '2px solid #9300c5',
+                    borderRadius: '4px',
+                    padding: '0.8rem',
+                    background: '#2a262b',
+                    color: '#aaa9ad',
+                    fontFamily: 'Teko, sans-serif',
+                    fontSize: '1rem',
+                    resize: 'vertical'
+                  }}
+                />
 
-                  {post.videoUrl && (
-                    <div style={{ marginBottom: '1rem' }}>
-                      <strong style={{ color: '#f50505' }}>Video:</strong> {post.videoUrl}
-                    </div>
-                  )}
+                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  Car Wraps Page Content:
+                </label>
+                <textarea
+                  value={carWrapsContent}
+                  onChange={(e) => setCarWrapsContent(e.target.value)}
+                  rows={2}
+                  style={{ 
+                    width: '100%', 
+                    marginBottom: '1rem',
+                    border: '2px solid #9300c5',
+                    borderRadius: '4px',
+                    padding: '0.8rem',
+                    background: '#2a262b',
+                    color: '#aaa9ad',
+                    fontFamily: 'Teko, sans-serif',
+                    fontSize: '1rem',
+                    resize: 'vertical'
+                  }}
+                />
 
-                  {/* Comments Section */}
-                  <div style={{ marginTop: '1rem', borderTop: '1px solid #666', paddingTop: '1rem' }}>
-                    <h5 style={{ color: '#f50505', marginBottom: '0.5rem' }}>
-                      Comments ({post.comments.length})
-                    </h5>
-                    
-                    {post.comments.map((comment, cIndex) => (
-                      <div key={cIndex} style={{
-                        background: '#3a363b',
-                        padding: '0.5rem',
-                        borderRadius: '4px',
-                        marginBottom: '0.5rem',
-                        fontSize: '0.9rem'
-                      }}>
-                        <p style={{ color: '#aaa9ad', margin: 0 }}>{comment.text}</p>
-                        <small style={{ color: '#666' }}>
-                          {new Date(comment.timestamp).toLocaleString()}
-                        </small>
+                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  Modeling Page Content:
+                </label>
+                <textarea
+                  value={modelingContent}
+                  onChange={(e) => setModelingContent(e.target.value)}
+                  rows={2}
+                  style={{ 
+                    width: '100%', 
+                    marginBottom: '1rem',
+                    border: '2px solid #9300c5',
+                    borderRadius: '4px',
+                    padding: '0.8rem',
+                    background: '#2a262b',
+                    color: '#aaa9ad',
+                    fontFamily: 'Teko, sans-serif',
+                    fontSize: '1rem',
+                    resize: 'vertical'
+                  }}
+                />
+
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <button onClick={saveContentChanges}>Save Changes</button>
+                  <button onClick={resetContent} style={{ background: 'linear-gradient(135deg, #3a363b 0%, #666 100%)' }}>
+                    Reset to Defaults
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Post Manager Section */}
+          {contentSection === 'posts' && (
+            <div>
+              <h3>Create New Post</h3>
+              
+              <div style={{ marginTop: '1.5rem' }}>
+                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  Select Page:
+                </label>
+                <select
+                  value={newPost.page}
+                  onChange={(e) => setNewPost({...newPost, page: e.target.value})}
+                  style={{
+                    width: '100%',
+                    marginBottom: '1rem',
+                    border: '2px solid #9300c5',
+                    borderRadius: '4px',
+                    padding: '0.8rem',
+                    background: '#2a262b',
+                    color: '#aaa9ad',
+                    fontFamily: 'Teko, sans-serif',
+                    fontSize: '1rem'
+                  }}
+                >
+                  <option value="home">Home</option>
+                  <option value="comedy">Comedy</option>
+                  <option value="carwraps">Car Wraps</option>
+                  <option value="modeling">Modeling</option>
+                </select>
+
+                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  Post Title:
+                </label>
+                <input
+                  type="text"
+                  value={newPost.title}
+                  onChange={(e) => setNewPost({...newPost, title: e.target.value})}
+                  placeholder="Enter post title..."
+                  style={{ width: '100%', marginBottom: '1rem' }}
+                />
+
+                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  Post Content:
+                </label>
+                <textarea
+                  value={newPost.content}
+                  onChange={(e) => setNewPost({...newPost, content: e.target.value})}
+                  placeholder="Enter post content..."
+                  rows={4}
+                  style={{ 
+                    width: '100%', 
+                    marginBottom: '1rem',
+                    border: '2px solid #9300c5',
+                    borderRadius: '4px',
+                    padding: '0.8rem',
+                    background: '#2a262b',
+                    color: '#aaa9ad',
+                    fontFamily: 'Teko, sans-serif',
+                    fontSize: '1rem',
+                    resize: 'vertical'
+                  }}
+                />
+
+                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  Image URL:
+                </label>
+                <input
+                  type="text"
+                  value={newPost.imageUrl}
+                  onChange={(e) => setNewPost({...newPost, imageUrl: e.target.value})}
+                  placeholder="Enter image URL (optional)..."
+                  style={{ width: '100%', marginBottom: '1rem' }}
+                />
+
+                <label style={{ display: 'block', color: '#f50505', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  Video URL:
+                </label>
+                <input
+                  type="text"
+                  value={newPost.videoUrl}
+                  onChange={(e) => setNewPost({...newPost, videoUrl: e.target.value})}
+                  placeholder="Enter video URL (YouTube, Vimeo, etc. - optional)..."
+                  style={{ width: '100%', marginBottom: '1rem' }}
+                />
+
+                <button onClick={createPost}>Create Post</button>
+              </div>
+
+              {/* Existing Posts */}
+              <div style={{ marginTop: '2rem' }}>
+                <h3>Existing Posts</h3>
+                {posts.length === 0 ? (
+                  <p style={{ color: '#aaa9ad' }}>No posts yet. Create your first post above!</p>
+                ) : (
+                  posts.map((post, index) => (
+                    <div key={post.id} style={{
+                      border: '2px solid #9300c5',
+                      borderRadius: '8px',
+                      padding: '1rem',
+                      marginBottom: '1rem',
+                      background: '#2a262b'
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
+                        <div>
+                          <span style={{
+                            background: '#f50505',
+                            color: 'white',
+                            padding: '0.3rem 0.6rem',
+                            borderRadius: '4px',
+                            fontSize: '0.8rem',
+                            fontWeight: 'bold'
+                          }}>
+                            {post.page.toUpperCase()}
+                          </span>
+                          <h4 style={{ color: '#9300c5', marginTop: '0.5rem' }}>{post.title}</h4>
+                        </div>
+                        <button 
+                          onClick={() => deletePost(post.id)}
+                          style={{ 
+                            background: '#f50505',
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.9rem'
+                          }}
+                        >
+                          Delete
+                        </button>
                       </div>
-                    ))}
 
-                    {selectedPostIndex === index ? (
-                      <div style={{ marginTop: '0.5rem' }}>
-                        <input
-                          type="text"
-                          value={newComment}
-                          onChange={(e) => setNewComment(e.target.value)}
-                          placeholder="Add a comment..."
-                          style={{ width: '100%', marginBottom: '0.5rem' }}
-                        />
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <p style={{ color: '#aaa9ad', marginBottom: '1rem' }}>{post.content}</p>
+
+                      {post.imageUrl && (
+                        <div style={{ marginBottom: '1rem' }}>
+                          <strong style={{ color: '#f50505' }}>Image:</strong> {post.imageUrl}
+                        </div>
+                      )}
+
+                      {post.videoUrl && (
+                        <div style={{ marginBottom: '1rem' }}>
+                          <strong style={{ color: '#f50505' }}>Video:</strong> {post.videoUrl}
+                        </div>
+                      )}
+
+                      {/* Comments Section */}
+                      <div style={{ marginTop: '1rem', borderTop: '1px solid #666', paddingTop: '1rem' }}>
+                        <h5 style={{ color: '#f50505', marginBottom: '0.5rem' }}>
+                          Comments ({post.comments.length})
+                        </h5>
+                        
+                        {post.comments.map((comment, cIndex) => (
+                          <div key={cIndex} style={{
+                            background: '#3a363b',
+                            padding: '0.5rem',
+                            borderRadius: '4px',
+                            marginBottom: '0.5rem',
+                            fontSize: '0.9rem'
+                          }}>
+                            <p style={{ color: '#aaa9ad', margin: 0 }}>{comment.text}</p>
+                            <small style={{ color: '#666' }}>
+                              {new Date(comment.timestamp).toLocaleString()}
+                            </small>
+                          </div>
+                        ))}
+
+                        {selectedPostIndex === index ? (
+                          <div style={{ marginTop: '0.5rem' }}>
+                            <input
+                              type="text"
+                              value={newComment}
+                              onChange={(e) => setNewComment(e.target.value)}
+                              placeholder="Add a comment..."
+                              style={{ width: '100%', marginBottom: '0.5rem' }}
+                            />
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                              <button 
+                                onClick={() => addCommentToPost(index)}
+                                style={{ padding: '0.5rem 1rem', fontSize: '0.9rem' }}
+                              >
+                                Post Comment
+                              </button>
+                              <button 
+                                onClick={() => {
+                                  setSelectedPostIndex(null);
+                                  setNewComment('');
+                                }}
+                                style={{ 
+                                  background: 'linear-gradient(135deg, #3a363b 0%, #666 100%)',
+                                  padding: '0.5rem 1rem',
+                                  fontSize: '0.9rem'
+                                }}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
                           <button 
-                            onClick={() => addCommentToPost(index)}
-                            style={{ padding: '0.5rem 1rem', fontSize: '0.9rem' }}
-                          >
-                            Post Comment
-                          </button>
-                          <button 
-                            onClick={() => {
-                              setSelectedPostIndex(null);
-                              setNewComment('');
-                            }}
+                            onClick={() => setSelectedPostIndex(index)}
                             style={{ 
-                              background: 'linear-gradient(135deg, #3a363b 0%, #666 100%)',
+                              marginTop: '0.5rem',
                               padding: '0.5rem 1rem',
                               fontSize: '0.9rem'
                             }}
                           >
-                            Cancel
+                            Add Comment
                           </button>
-                        </div>
+                        )}
                       </div>
-                    ) : (
-                      <button 
-                        onClick={() => setSelectedPostIndex(index)}
-                        style={{ 
-                          marginTop: '0.5rem',
-                          padding: '0.5rem 1rem',
-                          fontSize: '0.9rem'
-                        }}
-                      >
-                        Add Comment
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Patch Management Section */}
+          {contentSection === 'patches' && (
+            <div>
+              <h3>Patch Management</h3>
+              <button onClick={applyPatch} disabled={loading}>
+                {loading ? 'Applying...' : 'Apply Patch'}
+              </button>
+              <div style={{ marginTop: '1.5rem' }}>
+                <h3>Patch History:</h3>
+                {patches.map((patch, i) => (
+                  <div key={i} className="patch-item">{patch}</div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
