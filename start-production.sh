@@ -16,4 +16,4 @@ sleep 2
 
 echo "Starting production server on port 5000..."
 cd frontend
-npx serve -s dist -l 5000 --no-clipboard
+serve -s dist -l tcp://0.0.0.0:5000 --no-clipboard

@@ -81,6 +81,7 @@ app.get("/api", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, "127.0.0.1", () => {
-  console.log(`Backend running on http://127.0.0.1:${PORT}`);
+const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1';
+app.listen(PORT, HOST, () => {
+  console.log(`Backend running on http://${HOST}:${PORT}`);
 });
