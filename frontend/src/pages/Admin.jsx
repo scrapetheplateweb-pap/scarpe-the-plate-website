@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AdminContentEditor from './AdminContentEditor';
 import ProductManager from './ProductManager';
+import ApplicationManager from './ApplicationManager';
 
 export default function Admin() {
   const [patches, setPatches] = useState([]);
@@ -406,6 +407,12 @@ export default function Admin() {
           style={{ opacity: activeTab === 'products' ? 1 : 0.6 }}
         >
           Products
+        </button>
+        <button 
+          onClick={() => setActiveTab('applications')}
+          style={{ opacity: activeTab === 'applications' ? 1 : 0.6 }}
+        >
+          Job Applications
         </button>
         <button 
           onClick={() => setActiveTab('activity')}
@@ -1304,6 +1311,18 @@ export default function Admin() {
       {activeTab === 'products' && (
         <div className="admin-container">
           <ProductManager 
+            onSuccess={(msg) => {
+              setSuccessMessage(msg);
+              setTimeout(() => setSuccessMessage(''), 3000);
+            }}
+          />
+        </div>
+      )}
+
+      {/* Job Applications Tab */}
+      {activeTab === 'applications' && (
+        <div className="admin-container">
+          <ApplicationManager 
             onSuccess={(msg) => {
               setSuccessMessage(msg);
               setTimeout(() => setSuccessMessage(''), 3000);

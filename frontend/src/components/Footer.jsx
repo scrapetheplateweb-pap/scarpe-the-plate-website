@@ -38,6 +38,7 @@ export default function Footer() {
             <Link to="/media">Media</Link>
             <Link to="/store">Store</Link>
             <Link to="/contact">Contact</Link>
+            <Link to="/careers" style={{ color: '#f50505', fontWeight: 'bold' }}>Join Our Team</Link>
           </div>
         </div>
         

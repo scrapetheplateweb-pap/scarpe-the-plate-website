@@ -13,6 +13,7 @@ import Store from './pages/Store';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
+import Careers from './pages/Careers';
 import Admin from './pages/Admin';
 import ChatBot from './components/ChatBot';
 
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/careers" element={<Careers />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
       <Footer />
