@@ -5,6 +5,7 @@ import Comedy from './pages/Comedy';
 import CarWraps from './pages/CarWraps';
 import Modeling from './pages/Modeling';
 import Admin from './pages/Admin';
+import ChatBot from './components/ChatBot';
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/modeling" element={<Modeling />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
+      <ChatBot />
     </div>
   );
 }
