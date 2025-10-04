@@ -56,6 +56,8 @@ export default function Admin() {
   });
 
   React.useEffect(() => {
+    checkAdminSession();
+
     const savedPosts = localStorage.getItem('sitePosts');
     if (savedPosts) {
       setPosts(JSON.parse(savedPosts));
@@ -71,6 +73,22 @@ export default function Admin() {
       setAvailability(JSON.parse(savedAvailability));
     }
   }, []);
+
+  const checkAdminSession = async () => {
+    try {
+      const response = await fetch('/api/admin-auth/status', {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.isAdmin) {
+          setIsAuthenticated(true);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to check admin session:', error);
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
