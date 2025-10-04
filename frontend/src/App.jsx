@@ -1,29 +1,32 @@
 import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import Navigation from './components/Navigation';
+import Footer from './components/Footer';
 import Home from './pages/Home';
+import About from './pages/About';
 import Comedy from './pages/Comedy';
 import CarWraps from './pages/CarWraps';
 import Modeling from './pages/Modeling';
+import Media from './pages/Media';
+import Contact from './pages/Contact';
 import Admin from './pages/Admin';
 import ChatBot from './components/ChatBot';
 
 export default function App() {
   return (
     <div>
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/comedy">Comedy</Link>
-        <Link to="/car-wraps">Car Wraps</Link>
-        <Link to="/modeling">Modeling</Link>
-        <Link to="/admin">Admin</Link>
-      </nav>
+      <Navigation />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
         <Route path="/comedy" element={<Comedy />} />
         <Route path="/car-wraps" element={<CarWraps />} />
         <Route path="/modeling" element={<Modeling />} />
+        <Route path="/media" element={<Media />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
+      <Footer />
       <ChatBot />
     </div>
   );

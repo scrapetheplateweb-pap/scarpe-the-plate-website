@@ -44,7 +44,8 @@ nav a {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 }
 
-nav a:hover {
+nav a:hover,
+nav a.active {
   background: rgba(245, 5, 5, 0.3);
   transform: skewX(-5deg);
   border: 2px solid #f50505;
