@@ -48,6 +48,16 @@ export default function Footer() {
           <p>🚗 Custom Car Wrapping</p>
           <p>📸 Professional Modeling</p>
         </div>
+
+        <div className="footer-section">
+          <h4>Contact</h4>
+          <p>📧 Email: info@scrapetheplate.com</p>
+          <p>📱 Phone: (555) 123-4567</p>
+          <p>📍 Serving Nationwide</p>
+          <p style={{ marginTop: '0.5rem' }}>
+            <Link to="/contact" style={{ color: '#9300c5', textDecoration: 'none' }}>Contact Form →</Link>
+          </p>
+        </div>
         
         <div className="footer-section">
           <h4>Connect</h4>
