@@ -32,9 +32,6 @@ export default function Footer() {
           <p>🎤 Live Comedy Shows</p>
           <p>🚗 Custom Car Wrapping</p>
           <p>📸 Professional Modeling</p>
-          <p style={{ marginTop: '1rem' }}>
-            <Link to="/careers" style={{ color: '#f50505', textDecoration: 'none', fontWeight: 'bold' }}>Join Our Team →</Link>
-          </p>
         </div>
 
         <div className="footer-section">
@@ -45,6 +42,25 @@ export default function Footer() {
           <p style={{ marginTop: '1rem' }}>
             <Link to="/contact" style={{ color: '#9300c5', textDecoration: 'none', fontWeight: 'bold' }}>Contact Form →</Link>
           </p>
+          <div style={{ 
+            marginTop: '1.5rem', 
+            padding: '1rem', 
+            background: 'rgba(245, 5, 5, 0.1)', 
+            border: '2px solid #f50505', 
+            borderRadius: '4px',
+            textAlign: 'center'
+          }}>
+            <Link to="/careers" style={{ 
+              color: '#f50505', 
+              textDecoration: 'none', 
+              fontWeight: 'bold',
+              fontSize: '1.2rem',
+              textTransform: 'uppercase',
+              letterSpacing: '1px'
+            }}>
+              💼 Join Our Team →
+            </Link>
+          </div>
         </div>
         
         <div className="footer-section">
@@ -58,25 +74,25 @@ export default function Footer() {
             <Link to="/media">Media</Link>
             <Link to="/store">Store</Link>
           </div>
-          <div className="social-links" style={{ marginTop: '1rem' }}>
+          <div className="social-links" style={{ marginTop: '1rem', alignItems: 'center' }}>
             {socialLinks.facebook && (
-              <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="social-link">Facebook</a>
+              <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="social-link" style={{ borderLeft: 'none', textAlign: 'center' }}>Facebook</a>
             )}
             {socialLinks.instagram && (
-              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="social-link">Instagram</a>
+              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="social-link" style={{ borderLeft: 'none', textAlign: 'center' }}>Instagram</a>
             )}
             {socialLinks.twitter && (
-              <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="social-link">Twitter</a>
+              <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="social-link" style={{ borderLeft: 'none', textAlign: 'center' }}>Twitter</a>
             )}
             {socialLinks.youtube && (
-              <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" className="social-link">YouTube</a>
+              <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" className="social-link" style={{ borderLeft: 'none', textAlign: 'center' }}>YouTube</a>
             )}
             {!socialLinks.facebook && !socialLinks.instagram && !socialLinks.twitter && !socialLinks.youtube && (
               <>
-                <a href="#" className="social-link">Facebook</a>
-                <a href="#" className="social-link">Instagram</a>
-                <a href="#" className="social-link">Twitter</a>
-                <a href="#" className="social-link">YouTube</a>
+                <a href="#" className="social-link" style={{ borderLeft: 'none', textAlign: 'center' }}>Facebook</a>
+                <a href="#" className="social-link" style={{ borderLeft: 'none', textAlign: 'center' }}>Instagram</a>
+                <a href="#" className="social-link" style={{ borderLeft: 'none', textAlign: 'center' }}>Twitter</a>
+                <a href="#" className="social-link" style={{ borderLeft: 'none', textAlign: 'center' }}>YouTube</a>
               </>
             )}
           </div>
