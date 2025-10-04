@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const session = require("express-session");
+const pgSession = require("connect-pg-simple")(session);
+const pool = require("./db");
 require("dotenv").config();
 
 const app = express();
@@ -18,6 +20,11 @@ if (!process.env.SESSION_SECRET && process.env.NODE_ENV === 'production') {
 }
 
 app.use(session({
+  store: new pgSession({
+    pool: pool,
+    tableName: 'session',
+    createTableIfMissing: true
+  }),
   secret: process.env.SESSION_SECRET || 'dev-secret-change-in-production',
   resave: false,
   saveUninitialized: false,
@@ -31,8 +38,8 @@ app.use(session({
 
 if (!process.env.SESSION_SECRET) {
   console.warn('WARNING: Using default session secret. Set SESSION_SECRET environment variable for production use.');
-  console.warn('WARNING: Using in-memory session store. Sessions will be lost on server restart.');
-  console.warn('For production, configure a persistent store like connect-pg-simple.');
+} else {
+  console.log('✓ Using PostgreSQL session store - sessions will persist across server restarts');
 }
 
 const authRouter = require("./routes/auth");
