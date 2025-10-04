@@ -55,6 +55,7 @@ const cartRouter = require("./routes/cart");
 const ordersRouter = require("./routes/orders");
 const stripeRouter = require("./routes/stripe");
 const careersRouter = require("./routes/careers");
+const sectionsRouter = require("./routes/sections");
 
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postsRouter);
@@ -69,6 +70,7 @@ app.use("/api/cart", cartRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/careers", careersRouter);
+app.use("/api/sections", sectionsRouter);
 
 app.get("/api", (req, res) => {
   res.json({ message: "Scrape the Plate v4 Backend API" });
