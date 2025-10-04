@@ -1,0 +1,125 @@
+[
+  {
+    "id": "1759543096755",
+    "name": "Test Invalid Operation",
+    "description": "",
+    "timestamp": "2025-10-04T01:58:16.755Z",
+    "operations": [
+      {
+        "type": "update",
+        "path": "frontend/src",
+        "success": false,
+        "error": "Cannot perform operation: path is a directory"
+      }
+    ],
+    "backups": [],
+    "status": "partial"
+  },
+  {
+    "id": "1759542664519",
+    "name": "Security Test - Protected Directory",
+    "description": "Testing protected directory protection",
+    "timestamp": "2025-10-04T01:51:04.519Z",
+    "operations": [
+      {
+        "type": "create",
+        "path": "node_modules/malicious.js",
+        "success": false,
+        "error": "Cannot modify protected directory: node_modules"
+      }
+    ],
+    "backups": [],
+    "status": "partial"
+  },
+  {
+    "id": "1759542662450",
+    "name": "Security Test - Path Traversal Attempt",
+    "description": "Testing path traversal protection",
+    "timestamp": "2025-10-04T01:51:02.450Z",
+    "operations": [
+      {
+        "type": "create",
+        "path": "../../../etc/passwd",
+        "success": false,
+        "error": "Path traversal detected - access outside project root not allowed"
+      }
+    ],
+    "backups": [],
+    "status": "partial"
+  },
+  {
+    "id": "1759542661407",
+    "name": "Security Test - Normal Operation",
+    "description": "Testing that normal operations still work",
+    "timestamp": "2025-10-04T01:51:01.407Z",
+    "operations": [
+      {
+        "type": "create",
+        "path": "security-test.txt",
+        "success": true,
+        "error": null
+      }
+    ],
+    "backups": [],
+    "status": "success"
+  },
+  {
+    "id": "1759542551381",
+    "name": "Test Patch - Delete File",
+    "description": "Testing delete operation - cleanup test file",
+    "timestamp": "2025-10-04T01:49:11.381Z",
+    "operations": [
+      {
+        "type": "delete",
+        "path": "test-patch-file.txt",
+        "success": true
+      }
+    ],
+    "backups": [
+      {
+        "file": "/home/runner/workspace/test-patch-file.txt",
+        "backup": "/home/runner/workspace/backend/data/backups/test-patch-file.txt_1759542551381"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": "1759542532181",
+    "name": "Test Patch - Update File",
+    "description": "Testing update operation",
+    "timestamp": "2025-10-04T01:48:52.181Z",
+    "operations": [
+      {
+        "type": "update",
+        "path": "test-patch-file.txt",
+        "content": "This file has been UPDATED by the patch system!\nNew content added.",
+        "success": true
+      }
+    ],
+    "backups": [
+      {
+        "file": "/home/runner/workspace/test-patch-file.txt",
+        "backup": "/home/runner/workspace/backend/data/backups/test-patch-file.txt_1759542532181"
+      }
+    ],
+    "status": "success",
+    "rolledBack": true,
+    "rollbackTime": "2025-10-04T01:49:00.824Z"
+  },
+  {
+    "id": "1759542514054",
+    "name": "Test Patch - Create Sample File",
+    "description": "Testing patch system by creating a sample file",
+    "timestamp": "2025-10-04T01:48:34.054Z",
+    "operations": [
+      {
+        "type": "create",
+        "path": "test-patch-file.txt",
+        "content": "This file was created by the patch management system!",
+        "success": true
+      }
+    ],
+    "backups": [],
+    "status": "success"
+  }
+]

@@ -3,6 +3,9 @@ import AdminContentEditor from './AdminContentEditor';
 
 export default function Admin() {
   const [patches, setPatches] = useState([]);
+  const [patchInput, setPatchInput] = useState('');
+  const [patchError, setPatchError] = useState('');
+  const [patchSuccess, setPatchSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [accessCode, setAccessCode] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -72,22 +75,79 @@ export default function Admin() {
     }
   };
 
-  const applyPatch = async () => {
-    setLoading(true);
+  const loadPatches = async () => {
     try {
-      const response = await fetch('/api/admin/patch', {
+      const response = await fetch('/api/admin/patch/list');
+      const data = await response.json();
+      if (data.success) {
+        setPatches(data.patches);
+      }
+    } catch (error) {
+      console.error('Error loading patches:', error);
+    }
+  };
+
+  const applyPatch = async () => {
+    setPatchError('');
+    setPatchSuccess('');
+    setLoading(true);
+    
+    try {
+      const patchData = JSON.parse(patchInput);
+      
+      const response = await fetch('/api/admin/patch/apply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ patch: 'sample patch' })
+        body: JSON.stringify(patchData)
       });
+      
       const data = await response.json();
-      setPatches(prev => [...prev, data.message]);
+      
+      if (data.success) {
+        setPatchSuccess(`Patch applied successfully! ID: ${data.patchId}`);
+        setPatchInput('');
+        loadPatches();
+      } else {
+        setPatchError(data.error || 'Patch application failed');
+      }
     } catch (error) {
-      console.error('Error applying patch:', error);
+      setPatchError(`Error: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
+
+  const rollbackPatch = async (patchId) => {
+    if (!confirm('Are you sure you want to rollback this patch?')) {
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/admin/patch/rollback/${patchId}`, {
+        method: 'POST'
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setPatchSuccess('Patch rolled back successfully!');
+        loadPatches();
+      } else {
+        setPatchError(data.error || 'Rollback failed');
+      }
+    } catch (error) {
+      setPatchError(`Error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      loadPatches();
+    }
+  }, [isAuthenticated]);
 
   const saveContentChanges = () => {
     localStorage.setItem('siteContent', JSON.stringify({
@@ -577,14 +637,187 @@ export default function Admin() {
           {contentSection === 'patches' && (
             <div>
               <h3>Patch Management</h3>
-              <button onClick={applyPatch} disabled={loading}>
-                {loading ? 'Applying...' : 'Apply Patch'}
+              <p style={{ color: '#aaa9ad', marginBottom: '1rem' }}>
+                Apply code patches to modify files in the application. Patches are JSON-formatted with operations to create, update, or delete files.
+              </p>
+
+              <div style={{ 
+                background: '#3a363b', 
+                padding: '1rem', 
+                borderRadius: '8px',
+                marginBottom: '1rem',
+                fontSize: '0.85rem',
+                color: '#aaa9ad'
+              }}>
+                <strong style={{ color: '#f50505' }}>Example Patch Format:</strong>
+                <pre style={{ 
+                  margin: '0.5rem 0 0 0', 
+                  color: '#fff',
+                  overflowX: 'auto'
+                }}>{`{
+  "name": "Add test file",
+  "description": "Creates a test file",
+  "operations": [
+    {
+      "type": "create",
+      "path": "test-file.txt",
+      "content": "Hello World!"
+    }
+  ]
+}`}</pre>
+                <div style={{ marginTop: '0.5rem' }}>
+                  <strong>Operation types:</strong> create, update, delete<br/>
+                  <strong>Note:</strong> Paths are relative to project root. Protected directories (node_modules, .git, backend/data) cannot be modified.
+                </div>
+              </div>
+
+              <textarea
+                value={patchInput}
+                onChange={(e) => setPatchInput(e.target.value)}
+                placeholder="Paste your JSON patch here..."
+                style={{
+                  width: '100%',
+                  minHeight: '200px',
+                  marginBottom: '1rem',
+                  fontFamily: 'monospace',
+                  fontSize: '0.9rem',
+                  padding: '1rem',
+                  background: '#1a1a1a',
+                  color: '#fff',
+                  border: '2px solid #9300c5',
+                  borderRadius: '8px'
+                }}
+              />
+
+              {patchError && (
+                <div style={{
+                  background: '#4d1a1a',
+                  border: '2px solid #f50505',
+                  color: '#ff6b6b',
+                  padding: '1rem',
+                  borderRadius: '8px',
+                  marginBottom: '1rem'
+                }}>
+                  <strong>Error:</strong> {patchError}
+                </div>
+              )}
+
+              {patchSuccess && (
+                <div style={{
+                  background: '#1a4d1a',
+                  border: '2px solid #00ff00',
+                  color: '#90ff90',
+                  padding: '1rem',
+                  borderRadius: '8px',
+                  marginBottom: '1rem'
+                }}>
+                  <strong>Success:</strong> {patchSuccess}
+                </div>
+              )}
+
+              <button 
+                onClick={applyPatch} 
+                disabled={loading || !patchInput.trim()}
+                style={{
+                  opacity: (loading || !patchInput.trim()) ? 0.5 : 1,
+                  cursor: (loading || !patchInput.trim()) ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {loading ? 'Applying Patch...' : 'Apply Patch'}
               </button>
-              <div style={{ marginTop: '1.5rem' }}>
-                <h3>Patch History:</h3>
-                {patches.map((patch, i) => (
-                  <div key={i} className="patch-item">{patch}</div>
-                ))}
+
+              <div style={{ marginTop: '2rem' }}>
+                <h3>Patch History</h3>
+                {patches.length === 0 ? (
+                  <p style={{ color: '#aaa9ad' }}>No patches applied yet.</p>
+                ) : (
+                  patches.map((patch) => (
+                    <div 
+                      key={patch.id} 
+                      style={{
+                        border: '2px solid #9300c5',
+                        borderRadius: '8px',
+                        padding: '1rem',
+                        marginBottom: '1rem',
+                        background: patch.rolledBack ? '#3a2a1a' : '#2a262b'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.5rem' }}>
+                        <div>
+                          <h4 style={{ margin: '0 0 0.5rem 0', color: '#f50505' }}>
+                            {patch.name}
+                          </h4>
+                          <p style={{ color: '#aaa9ad', margin: '0 0 0.5rem 0', fontSize: '0.9rem' }}>
+                            {patch.description}
+                          </p>
+                        </div>
+                        <div>
+                          <span style={{
+                            background: patch.status === 'success' ? '#00aa00' : patch.status === 'partial' ? '#aa6600' : '#aa0000',
+                            color: 'white',
+                            padding: '0.3rem 0.6rem',
+                            borderRadius: '4px',
+                            fontSize: '0.8rem',
+                            fontWeight: 'bold'
+                          }}>
+                            {patch.status.toUpperCase()}
+                          </span>
+                          {patch.rolledBack && (
+                            <span style={{
+                              background: '#666',
+                              color: 'white',
+                              padding: '0.3rem 0.6rem',
+                              borderRadius: '4px',
+                              fontSize: '0.8rem',
+                              fontWeight: 'bold',
+                              marginLeft: '0.5rem'
+                            }}>
+                              ROLLED BACK
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.5rem' }}>
+                        Applied: {new Date(patch.timestamp).toLocaleString()}<br/>
+                        ID: {patch.id}<br/>
+                        Operations: {patch.operations.length}
+                      </div>
+
+                      <details style={{ marginTop: '0.5rem' }}>
+                        <summary style={{ cursor: 'pointer', color: '#9300c5', fontWeight: 'bold' }}>
+                          View Operations
+                        </summary>
+                        <div style={{ marginTop: '0.5rem', paddingLeft: '1rem' }}>
+                          {patch.operations.map((op, idx) => (
+                            <div key={idx} style={{ 
+                              marginBottom: '0.5rem',
+                              fontSize: '0.85rem',
+                              color: op.success ? '#90ff90' : '#ff6b6b'
+                            }}>
+                              • {op.type.toUpperCase()}: {op.path} {op.success ? '✓' : `✗ (${op.error})`}
+                            </div>
+                          ))}
+                        </div>
+                      </details>
+
+                      {!patch.rolledBack && patch.backups.length > 0 && (
+                        <button
+                          onClick={() => rollbackPatch(patch.id)}
+                          disabled={loading}
+                          style={{
+                            background: '#f50505',
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.9rem',
+                            marginTop: '1rem'
+                          }}
+                        >
+                          Rollback Patch
+                        </button>
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}
