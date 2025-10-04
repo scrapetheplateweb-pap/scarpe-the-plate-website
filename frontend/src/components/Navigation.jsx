@@ -29,7 +29,6 @@ export default function Navigation() {
           <Link to="/modeling" className={isActive('/modeling')}>Modeling</Link>
           <Link to="/media" className={isActive('/media')}>Media</Link>
           <Link to="/store" className={isActive('/store')}>Store</Link>
-          <Link to="/contact" className={isActive('/contact')}>Contact</Link>
         </div>
         
         <div className="nav-auth">
