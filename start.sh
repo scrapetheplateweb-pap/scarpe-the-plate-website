@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Kill any existing processes on required ports
+echo "Cleaning up existing processes..."
+lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+lsof -ti:5000 | xargs kill -9 2>/dev/null || true
+lsof -ti:5001 | xargs kill -9 2>/dev/null || true
+
+sleep 1
+
 echo "Starting backend on port 3000..."
 (cd backend && node server.js) &
 BACKEND_PID=$!
