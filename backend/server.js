@@ -80,8 +80,24 @@ app.get("/api", (req, res) => {
   res.json({ message: "Scrape the Plate v4 Backend API" });
 });
 
-const PORT = process.env.PORT || 3000;
+if (process.env.NODE_ENV === 'production') {
+  const path = require('path');
+  const distPath = path.join(__dirname, '..', 'frontend', 'dist');
+  
+  app.use(express.static(distPath));
+  
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+  
+  console.log('✓ Serving static frontend from:', distPath);
+}
+
+const PORT = process.env.NODE_ENV === 'production' ? (process.env.PORT || 5000) : 3000;
 const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1';
 app.listen(PORT, HOST, () => {
-  console.log(`Backend running on http://${HOST}:${PORT}`);
+  console.log(`Server running on http://${HOST}:${PORT}`);
+  if (process.env.NODE_ENV === 'production') {
+    console.log('✓ Production mode: serving frontend + API on port', PORT);
+  }
 });
