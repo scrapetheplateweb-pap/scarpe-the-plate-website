@@ -46,11 +46,35 @@ export default function Admin() {
   const [activityFilter, setActivityFilter] = useState('all');
   const [activityLimit, setActivityLimit] = useState(50);
 
-  // Availability management states - Weekly Schedule
+  // Availability management states - Weekly Schedule with Times
   const [weeklySchedule, setWeeklySchedule] = useState({
-    comedy: { monday: true, tuesday: true, wednesday: true, thursday: true, friday: true },
-    carwraps: { monday: true, tuesday: true, wednesday: true, thursday: true, friday: true },
-    modeling: { monday: true, tuesday: true, wednesday: true, thursday: true, friday: true }
+    comedy: {
+      monday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      tuesday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      wednesday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      thursday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      friday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      saturday: { isOpen: false, openTime: '09:00', closeTime: '17:00' },
+      sunday: { isOpen: false, openTime: '09:00', closeTime: '17:00' }
+    },
+    carwraps: {
+      monday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      tuesday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      wednesday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      thursday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      friday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      saturday: { isOpen: false, openTime: '09:00', closeTime: '17:00' },
+      sunday: { isOpen: false, openTime: '09:00', closeTime: '17:00' }
+    },
+    modeling: {
+      monday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      tuesday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      wednesday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      thursday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      friday: { isOpen: true, openTime: '09:00', closeTime: '17:00' },
+      saturday: { isOpen: false, openTime: '09:00', closeTime: '17:00' },
+      sunday: { isOpen: false, openTime: '09:00', closeTime: '17:00' }
+    }
   });
   const [selectedService, setSelectedService] = useState('comedy');
 
@@ -346,13 +370,31 @@ export default function Admin() {
       ...weeklySchedule,
       [selectedService]: {
         ...weeklySchedule[selectedService],
-        [day]: !weeklySchedule[selectedService][day]
+        [day]: {
+          ...weeklySchedule[selectedService][day],
+          isOpen: !weeklySchedule[selectedService][day].isOpen
+        }
       }
     };
     setWeeklySchedule(updated);
     localStorage.setItem('weeklySchedule', JSON.stringify(updated));
     setSuccessMessage(`${day.charAt(0).toUpperCase() + day.slice(1)} updated!`);
     setTimeout(() => setSuccessMessage(''), 2000);
+  };
+
+  const updateDayTimes = (day, field, value) => {
+    const updated = {
+      ...weeklySchedule,
+      [selectedService]: {
+        ...weeklySchedule[selectedService],
+        [day]: {
+          ...weeklySchedule[selectedService][day],
+          [field]: value
+        }
+      }
+    };
+    setWeeklySchedule(updated);
+    localStorage.setItem('weeklySchedule', JSON.stringify(updated));
   };
 
   if (!isAuthenticated) {
@@ -1060,55 +1102,123 @@ export default function Admin() {
               display: 'grid',
               gap: '1rem'
             }}>
-              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].map(day => {
-                const isOpen = weeklySchedule[selectedService]?.[day] ?? true;
+              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => {
+                const dayData = weeklySchedule[selectedService]?.[day] || { isOpen: false, openTime: '09:00', closeTime: '17:00' };
+                const { isOpen, openTime, closeTime } = dayData;
+                
                 return (
                   <div key={day} style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
                     padding: '1rem',
                     background: '#2a262b',
                     border: '2px solid #9300c5',
                     borderRadius: '6px'
                   }}>
-                    <div style={{ flex: 1 }}>
-                      <span style={{
-                        fontSize: '1.2rem',
-                        fontWeight: 'bold',
-                        color: '#aaa9ad',
-                        textTransform: 'capitalize'
-                      }}>
-                        {day}
-                      </span>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '0.8rem'
+                    }}>
+                      <div style={{ flex: 1 }}>
+                        <span style={{
+                          fontSize: '1.2rem',
+                          fontWeight: 'bold',
+                          color: '#aaa9ad',
+                          textTransform: 'capitalize'
+                        }}>
+                          {day}
+                        </span>
+                      </div>
+                      
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <span style={{
+                          padding: '0.4rem 1rem',
+                          borderRadius: '4px',
+                          fontSize: '0.95rem',
+                          fontWeight: 'bold',
+                          background: isOpen ? '#00aa00' : '#f50505',
+                          color: 'white',
+                          minWidth: '80px',
+                          textAlign: 'center'
+                        }}>
+                          {isOpen ? 'OPEN' : 'CLOSED'}
+                        </span>
+                        
+                        <button
+                          onClick={() => toggleDayAvailability(day)}
+                          style={{
+                            background: isOpen ? '#f50505' : '#00aa00',
+                            padding: '0.5rem 1.2rem',
+                            fontSize: '0.95rem',
+                            minWidth: '100px'
+                          }}
+                        >
+                          {isOpen ? 'Close' : 'Open'}
+                        </button>
+                      </div>
                     </div>
                     
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <span style={{
-                        padding: '0.4rem 1rem',
-                        borderRadius: '4px',
-                        fontSize: '0.95rem',
-                        fontWeight: 'bold',
-                        background: isOpen ? '#00aa00' : '#f50505',
-                        color: 'white',
-                        minWidth: '80px',
-                        textAlign: 'center'
+                    {isOpen && (
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: '1rem',
+                        paddingTop: '0.8rem',
+                        borderTop: '1px solid #9300c5'
                       }}>
-                        {isOpen ? 'OPEN' : 'CLOSED'}
-                      </span>
-                      
-                      <button
-                        onClick={() => toggleDayAvailability(day)}
-                        style={{
-                          background: isOpen ? '#f50505' : '#00aa00',
-                          padding: '0.5rem 1.2rem',
-                          fontSize: '0.95rem',
-                          minWidth: '100px'
-                        }}
-                      >
-                        {isOpen ? 'Close' : 'Open'}
-                      </button>
-                    </div>
+                        <div>
+                          <label style={{
+                            display: 'block',
+                            color: '#aaa9ad',
+                            fontSize: '0.85rem',
+                            marginBottom: '0.3rem'
+                          }}>
+                            Open Time:
+                          </label>
+                          <input
+                            type="time"
+                            value={openTime}
+                            onChange={(e) => updateDayTimes(day, 'openTime', e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '0.5rem',
+                              background: '#3a363b',
+                              border: '1px solid #9300c5',
+                              borderRadius: '4px',
+                              color: '#aaa9ad',
+                              fontFamily: 'Teko, sans-serif',
+                              fontSize: '1rem'
+                            }}
+                          />
+                        </div>
+                        
+                        <div>
+                          <label style={{
+                            display: 'block',
+                            color: '#aaa9ad',
+                            fontSize: '0.85rem',
+                            marginBottom: '0.3rem'
+                          }}>
+                            Close Time:
+                          </label>
+                          <input
+                            type="time"
+                            value={closeTime}
+                            onChange={(e) => updateDayTimes(day, 'closeTime', e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '0.5rem',
+                              background: '#3a363b',
+                              border: '1px solid #9300c5',
+                              borderRadius: '4px',
+                              color: '#aaa9ad',
+                              fontFamily: 'Teko, sans-serif',
+                              fontSize: '1rem'
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -1122,7 +1232,7 @@ export default function Admin() {
               border: '2px solid #9300c5'
             }}>
               <p style={{ color: '#aaa9ad', fontSize: '0.95rem', margin: 0 }}>
-                💡 <strong style={{ color: '#f50505' }}>Tip:</strong> Toggle days to mark when you're available for bookings. This schedule applies to {selectedService === 'comedy' ? 'Comedy shows' : selectedService === 'carwraps' ? 'Car Wrapping services' : 'Modeling sessions'}.
+                💡 <strong style={{ color: '#f50505' }}>Tip:</strong> Toggle days open/closed and set your hours for {selectedService === 'comedy' ? 'Comedy shows' : selectedService === 'carwraps' ? 'Car Wrapping services' : 'Modeling sessions'}. Times only show when a day is marked as open.
               </p>
             </div>
           </div>
