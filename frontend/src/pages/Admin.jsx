@@ -46,15 +46,13 @@ export default function Admin() {
   const [activityFilter, setActivityFilter] = useState('all');
   const [activityLimit, setActivityLimit] = useState(50);
 
-  // Availability management states
-  const [availability, setAvailability] = useState({});
-  const [selectedService, setSelectedService] = useState('comedy');
-  const [newSlot, setNewSlot] = useState({
-    date: '',
-    startTime: '',
-    endTime: '',
-    notes: ''
+  // Availability management states - Weekly Schedule
+  const [weeklySchedule, setWeeklySchedule] = useState({
+    comedy: { monday: true, tuesday: true, wednesday: true, thursday: true, friday: true },
+    carwraps: { monday: true, tuesday: true, wednesday: true, thursday: true, friday: true },
+    modeling: { monday: true, tuesday: true, wednesday: true, thursday: true, friday: true }
   });
+  const [selectedService, setSelectedService] = useState('comedy');
 
   React.useEffect(() => {
     checkAdminSession();
@@ -69,9 +67,9 @@ export default function Admin() {
       setBookings(JSON.parse(savedBookings));
     }
 
-    const savedAvailability = localStorage.getItem('availabilityByService');
-    if (savedAvailability) {
-      setAvailability(JSON.parse(savedAvailability));
+    const savedSchedule = localStorage.getItem('weeklySchedule');
+    if (savedSchedule) {
+      setWeeklySchedule(JSON.parse(savedSchedule));
     }
   }, []);
 
@@ -343,63 +341,18 @@ export default function Admin() {
     setTimeout(() => setSuccessMessage(''), 3000);
   };
 
-  const addTimeSlot = () => {
-    if (!newSlot.date || !newSlot.startTime || !newSlot.endTime) {
-      alert('Please fill in date, start time, and end time!');
-      return;
-    }
-
-    const slot = {
-      ...newSlot,
-      id: Date.now(),
-      status: 'available',
-      createdAt: new Date().toISOString()
-    };
-
-    const updated = { ...availability };
-    if (!updated[selectedService]) {
-      updated[selectedService] = [];
-    }
-    updated[selectedService].push(slot);
-    
-    setAvailability(updated);
-    localStorage.setItem('availabilityByService', JSON.stringify(updated));
-
-    setNewSlot({
-      date: '',
-      startTime: '',
-      endTime: '',
-      notes: ''
-    });
-
-    setSuccessMessage('Time slot added successfully!');
-    setTimeout(() => setSuccessMessage(''), 3000);
-  };
-
-  const deleteTimeSlot = (slotId) => {
-    const updated = { ...availability };
-    if (updated[selectedService]) {
-      updated[selectedService] = updated[selectedService].filter(s => s.id !== slotId);
-      setAvailability(updated);
-      localStorage.setItem('availabilityByService', JSON.stringify(updated));
-      setSuccessMessage('Time slot deleted!');
-      setTimeout(() => setSuccessMessage(''), 3000);
-    }
-  };
-
-  const toggleSlotAvailability = (slotId) => {
-    const updated = { ...availability };
-    if (updated[selectedService]) {
-      const slotIndex = updated[selectedService].findIndex(s => s.id === slotId);
-      if (slotIndex !== -1) {
-        const currentStatus = updated[selectedService][slotIndex].status;
-        updated[selectedService][slotIndex].status = currentStatus === 'available' ? 'booked' : 'available';
-        setAvailability(updated);
-        localStorage.setItem('availabilityByService', JSON.stringify(updated));
-        setSuccessMessage('Slot status updated!');
-        setTimeout(() => setSuccessMessage(''), 3000);
+  const toggleDayAvailability = (day) => {
+    const updated = {
+      ...weeklySchedule,
+      [selectedService]: {
+        ...weeklySchedule[selectedService],
+        [day]: !weeklySchedule[selectedService][day]
       }
-    }
+    };
+    setWeeklySchedule(updated);
+    localStorage.setItem('weeklySchedule', JSON.stringify(updated));
+    setSuccessMessage(`${day.charAt(0).toUpperCase() + day.slice(1)} updated!`);
+    setTimeout(() => setSuccessMessage(''), 2000);
   };
 
   if (!isAuthenticated) {
@@ -1065,7 +1018,7 @@ export default function Admin() {
       {/* Availability Tab */}
       {activeTab === 'availability' && (
         <div className="admin-container">
-          <h3>Manage Service Availability</h3>
+          <h3>Manage Weekly Availability</h3>
           
           {/* Service Selector */}
           <div style={{ marginTop: '1.5rem', marginBottom: '2rem' }}>
@@ -1083,7 +1036,7 @@ export default function Admin() {
                 background: '#2a262b',
                 color: '#aaa9ad',
                 fontFamily: 'Teko, sans-serif',
-                fontSize: '1rem'
+                fontSize: '1.1rem'
               }}
             >
               <option value="comedy">Comedy</option>
@@ -1092,148 +1045,86 @@ export default function Admin() {
             </select>
           </div>
 
-          {/* Add New Time Slot */}
+          {/* Weekly Schedule Table */}
           <div style={{
             border: '2px solid #9300c5',
             borderRadius: '8px',
             padding: '1.5rem',
-            marginBottom: '2rem',
             background: '#3a363b'
           }}>
-            <h4 style={{ color: '#f50505', marginBottom: '1rem' }}>Add New Time Slot</h4>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-              <div>
-                <label style={{ display: 'block', color: '#aaa9ad', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-                  Date:
-                </label>
-                <input
-                  type="date"
-                  value={newSlot.date}
-                  onChange={(e) => setNewSlot({...newSlot, date: e.target.value})}
-                  style={{ width: '100%' }}
-                />
-              </div>
-              
-              <div>
-                <label style={{ display: 'block', color: '#aaa9ad', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-                  Start Time:
-                </label>
-                <input
-                  type="time"
-                  value={newSlot.startTime}
-                  onChange={(e) => setNewSlot({...newSlot, startTime: e.target.value})}
-                  style={{ width: '100%' }}
-                />
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-              <div>
-                <label style={{ display: 'block', color: '#aaa9ad', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-                  End Time:
-                </label>
-                <input
-                  type="time"
-                  value={newSlot.endTime}
-                  onChange={(e) => setNewSlot({...newSlot, endTime: e.target.value})}
-                  style={{ width: '100%' }}
-                />
-              </div>
-              
-              <div>
-                <label style={{ display: 'block', color: '#aaa9ad', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-                  Notes (optional):
-                </label>
-                <input
-                  type="text"
-                  value={newSlot.notes}
-                  onChange={(e) => setNewSlot({...newSlot, notes: e.target.value})}
-                  placeholder="e.g., Special event..."
-                  style={{ width: '100%' }}
-                />
-              </div>
-            </div>
-
-            <button onClick={addTimeSlot}>Add Time Slot</button>
-          </div>
-
-          {/* Existing Time Slots */}
-          <div>
-            <h4 style={{ color: '#f50505', marginBottom: '1rem' }}>
-              Existing Time Slots for {selectedService === 'comedy' ? 'Comedy' : selectedService === 'carwraps' ? 'Car Wraps' : 'Modeling'}
+            <h4 style={{ color: '#f50505', marginBottom: '1.5rem' }}>
+              Weekly Schedule - {selectedService === 'comedy' ? 'Comedy' : selectedService === 'carwraps' ? 'Car Wraps' : 'Modeling'}
             </h4>
             
-            {(!availability[selectedService] || availability[selectedService].length === 0) ? (
-              <p style={{ color: '#aaa9ad' }}>No time slots created yet for this service.</p>
-            ) : (
-              <div>
-                {availability[selectedService]
-                  .sort((a, b) => new Date(a.date) - new Date(b.date))
-                  .map(slot => (
-                    <div key={slot.id} style={{
-                      border: '2px solid #9300c5',
-                      borderRadius: '8px',
-                      padding: '1rem',
-                      marginBottom: '1rem',
-                      background: '#2a262b',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center'
-                    }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ marginBottom: '0.5rem' }}>
-                          <strong style={{ color: '#f50505' }}>Date:</strong> {new Date(slot.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
-                        </div>
-                        <div style={{ marginBottom: '0.5rem' }}>
-                          <strong style={{ color: '#f50505' }}>Time:</strong> {slot.startTime} - {slot.endTime}
-                        </div>
-                        {slot.notes && (
-                          <div style={{ marginBottom: '0.5rem' }}>
-                            <strong style={{ color: '#f50505' }}>Notes:</strong> {slot.notes}
-                          </div>
-                        )}
-                        <div>
-                          <span style={{
-                            padding: '0.3rem 0.6rem',
-                            borderRadius: '4px',
-                            fontSize: '0.85rem',
-                            fontWeight: 'bold',
-                            background: slot.status === 'available' ? '#00aa00' : '#666',
-                            color: 'white'
-                          }}>
-                            {slot.status === 'available' ? 'AVAILABLE' : 'BOOKED'}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
-                        <button
-                          onClick={() => toggleSlotAvailability(slot.id)}
-                          style={{
-                            background: slot.status === 'available' ? '#666' : '#00aa00',
-                            padding: '0.5rem 1rem',
-                            fontSize: '0.9rem',
-                            whiteSpace: 'nowrap'
-                          }}
-                        >
-                          {slot.status === 'available' ? 'Mark as Booked' : 'Mark as Available'}
-                        </button>
-                        <button
-                          onClick={() => deleteTimeSlot(slot.id)}
-                          style={{
-                            background: '#f50505',
-                            padding: '0.5rem 1rem',
-                            fontSize: '0.9rem'
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
+            <div style={{
+              display: 'grid',
+              gap: '1rem'
+            }}>
+              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].map(day => {
+                const isOpen = weeklySchedule[selectedService]?.[day] ?? true;
+                return (
+                  <div key={day} style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '1rem',
+                    background: '#2a262b',
+                    border: '2px solid #9300c5',
+                    borderRadius: '6px'
+                  }}>
+                    <div style={{ flex: 1 }}>
+                      <span style={{
+                        fontSize: '1.2rem',
+                        fontWeight: 'bold',
+                        color: '#aaa9ad',
+                        textTransform: 'capitalize'
+                      }}>
+                        {day}
+                      </span>
                     </div>
-                  ))}
-              </div>
-            )}
+                    
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <span style={{
+                        padding: '0.4rem 1rem',
+                        borderRadius: '4px',
+                        fontSize: '0.95rem',
+                        fontWeight: 'bold',
+                        background: isOpen ? '#00aa00' : '#f50505',
+                        color: 'white',
+                        minWidth: '80px',
+                        textAlign: 'center'
+                      }}>
+                        {isOpen ? 'OPEN' : 'CLOSED'}
+                      </span>
+                      
+                      <button
+                        onClick={() => toggleDayAvailability(day)}
+                        style={{
+                          background: isOpen ? '#f50505' : '#00aa00',
+                          padding: '0.5rem 1.2rem',
+                          fontSize: '0.95rem',
+                          minWidth: '100px'
+                        }}
+                      >
+                        {isOpen ? 'Close' : 'Open'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div style={{
+              marginTop: '1.5rem',
+              padding: '1rem',
+              background: '#2a262b',
+              borderRadius: '6px',
+              border: '2px solid #9300c5'
+            }}>
+              <p style={{ color: '#aaa9ad', fontSize: '0.95rem', margin: 0 }}>
+                💡 <strong style={{ color: '#f50505' }}>Tip:</strong> Toggle days to mark when you're available for bookings. This schedule applies to {selectedService === 'comedy' ? 'Comedy shows' : selectedService === 'carwraps' ? 'Car Wrapping services' : 'Modeling sessions'}.
+              </p>
+            </div>
           </div>
         </div>
       )}
