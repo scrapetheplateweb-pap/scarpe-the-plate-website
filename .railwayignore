@@ -1,0 +1,23 @@
+# Ignore node_modules to avoid path validation issues
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+chatbot_service/__pycache__/
+
+# Ignore build artifacts
+frontend/dist/
+*.log
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore session files
+backend/sessions/
+*.sqlite
+*.db
+
+# Ignore temporary files
+.tmp/
+temp/

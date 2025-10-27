@@ -1,0 +1,17 @@
+# Nixpacks Configuration for Railway
+[phases.setup]
+nixPkgs = ["nodejs-18_x", "python310"]
+
+[phases.install]
+cmds = [
+    "cd frontend && npm ci",
+    "cd backend && npm ci"
+]
+
+[phases.build]
+cmds = [
+    "cd frontend && npm run build"
+]
+
+[start]
+cmd = "cd backend && npm start"
