@@ -4,7 +4,7 @@
 
 ### **Build Command:**
 ```
-cd frontend && npm install && npm run build && cd ../backend && npm install
+echo "Starting build..." && cd frontend && npm install && npm run build && echo "Frontend built successfully!" && ls -la dist/ && cd ../backend && npm install && echo "Backend ready!"
 ```
 
 ### **Start Command:**

@@ -107,22 +107,61 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-app.get("/api/health", (req, res) => {
-  res.json({ message: "Scrape the Plate v4 Backend API" });
-});
-
 // Serve static frontend files in production
-if (process.env.NODE_ENV === 'production') {
+const distPath = path.join(__dirname, '..', 'frontend', 'dist');
+
+// Serve static files from dist directory
+app.use(express.static(distPath));
+
+// API health check
+app.get("/api/health", (req, res) => {
+  const fs = require('fs');
   const distPath = path.join(__dirname, '..', 'frontend', 'dist');
   
-  app.use(express.static(distPath));
+  let buildInfo = {};
+  try {
+    buildInfo.distExists = fs.existsSync(distPath);
+    buildInfo.indexExists = fs.existsSync(path.join(distPath, 'index.html'));
+    buildInfo.distContents = buildInfo.distExists ? fs.readdirSync(distPath) : [];
+  } catch (error) {
+    buildInfo.error = error.message;
+  }
   
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
+  res.json({ 
+    message: "Scrape the Plate v4 Backend API",
+    environment: process.env.NODE_ENV,
+    timestamp: new Date().toISOString(),
+    buildInfo: buildInfo,
+    paths: {
+      currentDir: __dirname,
+      distPath: distPath
+    }
   });
+});
+
+// Catch all handler for React routing - must be last
+app.get('*', (req, res) => {
+  // Don't serve index.html for API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'API endpoint not found' });
+  }
   
-  console.log('✓ Serving static frontend from:', distPath);
-}
+  const indexPath = path.join(distPath, 'index.html');
+  
+  // Check if index.html exists
+  if (require('fs').existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send(`
+      <h1>Frontend Build Not Found</h1>
+      <p>The frontend build files are missing.</p>
+      <p>Expected location: ${distPath}</p>
+      <p>Make sure the build command completed successfully.</p>
+    `);
+  }
+});
+
+console.log('✓ Serving static frontend from:', distPath);
 
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0'; // Accept connections from any device
