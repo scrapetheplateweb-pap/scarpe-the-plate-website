@@ -1,0 +1,15 @@
+version: "2"
+authtoken: 34eth2Ahoj4Lp8Gf0bHfZbiiuNQ_51wCdrdLMSxnB2bNwEZTo
+tunnels:
+  frontend:
+    addr: 5000
+    proto: http
+    name: "scrape-the-plate-frontend"
+  backend:
+    addr: 3000
+    proto: http
+    name: "scrape-the-plate-backend"
+  chatbot:
+    addr: 5001
+    proto: http
+    name: "scrape-the-plate-chatbot"

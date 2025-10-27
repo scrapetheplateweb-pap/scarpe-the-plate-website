@@ -4,6 +4,7 @@ const axios = require("axios");
 const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const pool = require("./db");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
@@ -63,40 +64,55 @@ const commentsRouter = require("./routes/comments");
 const userBookingsRouter = require("./routes/userBookings");
 const bookingsRouter = require("./routes/bookings");
 const adminRouter = require("./routes/admin");
-const chatProxyRouter = require("./routes/chatProxy");
+const adminAuthRouter = require("./routes/admin-auth");
 const activityRouter = require("./routes/activity");
-const productsRouter = require("./routes/products");
-const cartRouter = require("./routes/cart");
+const chatProxyRouter = require("./routes/chatProxy");
+const mobilesettingsRouter = require("./routes/mobile-settings");
 const ordersRouter = require("./routes/orders");
+const cartRouter = require("./routes/cart");
+const sectionsRouter = require("./routes/sections");
+const productsRouter = require("./routes/products");
 const stripeRouter = require("./routes/stripe");
 const careersRouter = require("./routes/careers");
-const sectionsRouter = require("./routes/sections");
-const adminAuthRouter = require("./routes/admin-auth");
-const mobileSettingsRouter = require("./routes/mobile-settings");
 
+app.use(express.static(path.join(__dirname, 'public')));
+
+// API Routes
 app.use("/api/auth", authRouter);
-app.use("/api/admin-auth", adminAuthRouter);
-app.use("/api/mobile-settings", mobileSettingsRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/user-bookings", userBookingsRouter);
 app.use("/api/bookings", bookingsRouter);
 app.use("/api/admin", adminRouter);
-app.use("/api/chat", chatProxyRouter);
+app.use("/api/admin-auth", adminAuthRouter);
 app.use("/api/activity", activityRouter);
-app.use("/api/products", productsRouter);
-app.use("/api/cart", cartRouter);
+app.use("/api/chat", chatProxyRouter);
+app.use("/api/mobile-settings", mobilesettingsRouter);
 app.use("/api/orders", ordersRouter);
+app.use("/api/cart", cartRouter);
+app.use("/api/sections", sectionsRouter);
+app.use("/api/products", productsRouter);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/careers", careersRouter);
-app.use("/api/sections", sectionsRouter);
 
-app.get("/api", (req, res) => {
+// Chatbot route proxy
+app.post("/chat", async (req, res) => {
+  try {
+    const chatbotUrl = process.env.CHATBOT_URL || "http://localhost:5001";
+    const response = await axios.post(`${chatbotUrl}/chat`, req.body);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Chatbot proxy error:", error.message);
+    res.status(500).json({ error: "Chatbot service unavailable" });
+  }
+});
+
+app.get("/api/health", (req, res) => {
   res.json({ message: "Scrape the Plate v4 Backend API" });
 });
 
+// Serve static frontend files in production
 if (process.env.NODE_ENV === 'production') {
-  const path = require('path');
   const distPath = path.join(__dirname, '..', 'frontend', 'dist');
   
   app.use(express.static(distPath));
@@ -108,7 +124,7 @@ if (process.env.NODE_ENV === 'production') {
   console.log('✓ Serving static frontend from:', distPath);
 }
 
-const PORT = process.env.NODE_ENV === 'production' ? (process.env.PORT || 5000) : 3000;
+const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0'; // Accept connections from any device
 app.listen(PORT, HOST, () => {
   console.log(`Server running on http://${HOST}:${PORT}`);

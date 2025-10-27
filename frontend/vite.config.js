@@ -13,9 +13,30 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:3000',
+        target: 'http://10.1.10.41:3000',
+        changeOrigin: true
+      },
+      '/chat': {
+        target: 'http://10.1.10.41:5001',
         changeOrigin: true
       }
     }
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          stripe: ['@stripe/stripe-js', '@stripe/react-stripe-js']
+        }
+      }
+    }
+  },
+  preview: {
+    port: 5000,
+    host: true
   }
 })

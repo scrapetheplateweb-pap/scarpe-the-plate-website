@@ -1,0 +1,9 @@
+version: "2"
+authtoken: 34eth2Ahoj4Lp8Gf0bHfZbiiuNQ_51wCdrdLMSxnB2bNwEZTo
+
+# Custom domain configuration for scrapetheplateent.com
+tunnels:
+  frontend:
+    addr: 5000
+    proto: http
+    hostname: scrapetheplateent.com
