@@ -1,0 +1,27 @@
+# Render Deployment Configuration
+
+## Services Configuration
+
+### Web Service (Backend + Frontend)
+- **Build Command**: `cd frontend && npm install && npm run build && cd ../backend && npm install`
+- **Start Command**: `cd backend && npm start`
+- **Environment**: Node.js
+- **Plan**: Free
+
+### Environment Variables
+```
+NODE_ENV=production
+SESSION_SECRET=your-super-secret-session-key-here
+DATABASE_URL=postgresql://user:password@host:port/database
+STRIPE_PUBLISHABLE_KEY=pk_live_your_stripe_key
+STRIPE_SECRET_KEY=sk_live_your_stripe_key
+PORT=10000
+```
+
+### Auto-Deploy
+- **Repository**: scrapetheplateweb-pap/scarpe-the-plate-website
+- **Branch**: main
+- **Root Directory**: ./
+
+## Database
+Render will provide a free PostgreSQL database that you can connect.
